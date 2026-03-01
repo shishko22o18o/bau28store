@@ -573,40 +573,7 @@
             // Замени на URL своего бота (например, https://твой-бот.up.railway.app)
             const API_BASE_URL = 'bot-production-cf41.up.railway.app'; // Оставь пустым, если сервер пока не нужен
             
-            // Локальные данные (если сервер недоступен)
-            const defaultProducts = {
-                clothes: [
-                    { id: 'c1', name: 'Футболка Oversize', price: 2990, img: 'images/tovary/futbolka.jpg', discount: 0, isNew: true },
-                    { id: 'c2', name: 'Худи с принтом', price: 4490, img: 'images/tovary/hudi.jpg', discount: 10 },
-                    { id: 'c3', name: 'Карго штаны', price: 3790, img: 'images/tovary/kargo.jpg' },
-                    { id: 'c4', name: 'Бейсболка', price: 1990, img: 'images/tovary/bejsbolka.jpg', discount: 5 },
-                ],
-                accessories: [
-                    { id: 'a1', name: 'Часы сталь/кожа', price: 5490, img: 'images/tovary/chasy.jpg' },
-                    { id: 'a2', name: 'Очки Aviator', price: 2290, img: 'images/tovary/ochki.jpg' },
-                    { id: 'a3', name: 'Чокер с шипами', price: 1190, img: 'images/tovary/choker.jpg' },
-                ],
-                vape: {
-                    liquids: [
-                        { id: 'v1', name: 'Bloody Mary 30ml', price: 890, img: 'images/tovary/liquid1.jpg' },
-                        { id: 'v2', name: 'Ice Mint 30ml', price: 890, img: 'images/tovary/liquid2.jpg' },
-                    ],
-                    consumables: [
-                        { id: 'v3', name: 'Испарители 0.6Ω', price: 450, img: 'images/tovary/coils.jpg' },
-                    ],
-                    disposable: [
-                        { id: 'v4', name: 'Elf Bar 600', price: 1290, img: 'images/tovary/elfbar.jpg' },
-                    ],
-                    pods: [
-                        { id: 'v5', name: 'Caliburn G2', price: 2490, img: 'images/tovary/caliburn.jpg' },
-                    ],
-                },
-                electronics: [
-                    { id: 'e1', name: 'Беспроводные наушники', price: 3990, img: 'images/tovary/airpods.jpg' },
-                    { id: 'e2', name: 'Power bank 10000', price: 2190, img: 'images/tovary/powerbank.jpg' },
-                ]
-            };
-
+           
             // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
             let products = defaultProducts; // Сначала заглушка
             let currentCat = 'clothes';
@@ -923,4 +890,5 @@
     </script>
 </body>
 </html>
+
 
