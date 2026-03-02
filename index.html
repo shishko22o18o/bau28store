@@ -379,6 +379,64 @@
             box-shadow: 0 10px 40px rgba(184, 41, 255, 0.3);
             transition: 0.3s ease;
         }
+        .hotbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(20, 15, 28, 0.9);
+    backdrop-filter: blur(20px);
+    border-top: 2px solid var(--primary);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 8px 0 12px;
+    z-index: 150;
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5);
+}
+
+.hotbar-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.1s ease;
+}
+
+.hotbar-btn:active {
+    transform: scale(0.9);
+}
+
+.hotbar-icon {
+    font-size: 24px;
+    margin-bottom: 2px;
+}
+
+.hotbar-label {
+    font-size: 11px;
+}
+
+.hotbar-badge {
+    position: absolute;
+    top: -2px;
+    right: -5px;
+    background: var(--heart);
+    color: white;
+    font-size: 10px;
+    font-weight: 800;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3px;
+    border: 1px solid var(--bg-color);
+}
 
         .cart-fixed.hidden { transform: translate(-50%, 150%); }
 
@@ -723,13 +781,7 @@
     </div>
           
     <div class="top-actions">
-    <button class="top-btn square" id="wheelBtn">
-        <img src="images/wheel-icon.png" alt="Колесо фортуны">
-    </button>
-    <button class="top-btn square" id="topFavBtn">
-        <img src="images/fav-icon.png" alt="Избранное">
-        <span class="badge" id="favBadge" style="display:none;">0</span>
-    </button>
+        
 </div>
 </div>
    
@@ -757,17 +809,6 @@
         </div>
 
         <div class="products-grid" id="productsGrid"></div>
-    </div>
-
-    <div class="cart-fixed hidden" id="floatingCart">
-        <div class="cart-icon-wrapper">
-            <div class="cart-icon-large">🛒<span class="cart-count-large" id="cartCount">0</span></div>
-            <div class="cart-details">
-                <span class="cart-label">Корзина</span>
-                <span class="cart-total-large" id="cartTotal">0 ₽</span>
-            </div>
-        </div>
-        <button class="checkout-btn-modern" id="openCartBtn">Оформить</button>
     </div>
 
     <!-- Модалка корзины -->
@@ -847,6 +888,25 @@
         </div>
     </div>
 
+<!-- Нижний хот-бар -->
+<div class="hotbar" id="hotbar">
+    <button class="hotbar-btn" id="hotbarCart">
+        <span class="hotbar-icon">🛒</span>
+        <span class="hotbar-label">Корзина</span>
+        <span class="hotbar-badge" id="hotbarCartBadge">0</span>
+    </button>
+    <button class="hotbar-btn" id="hotbarFav">
+        <span class="hotbar-icon">❤️</span>
+        <span class="hotbar-label">Избранное</span>
+        <span class="hotbar-badge" id="hotbarFavBadge">0</span>
+    </button>
+    <button class="hotbar-btn" id="hotbarWheel">
+        <span class="hotbar-icon">🎁</span>
+        <span class="hotbar-label">Колесо</span>
+        <!-- без бейджа -->
+    </button>
+</div>
+    
     <div class="notification" id="notification">✅ Добавлено</div>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -1079,6 +1139,12 @@
                 cartCountSpan.textContent = totalItems;
                 cartTotalSpan.textContent = formatPrice(total);
                 modalTotalSpan.textContent = formatPrice(total);
+
+
+    const hotbarCartBadge = document.getElementById('hotbarCartBadge');
+    if (hotbarCartBadge) {
+        hotbarCartBadge.textContent = totalItems;
+    }
                 
                 if (totalItems > 0) floatingCart.classList.remove('hidden');
                 else floatingCart.classList.add('hidden');
@@ -1246,49 +1312,108 @@
                 }, 3000);
             });
 
-            // ==================== ИЗБРАННОЕ ====================
-            function toggleFavorite(product) {
-                const index = favorites.findIndex(f => f.id === product.id);
-                if (index === -1) {
-                    favorites.push(product);
-                } else {
-                    favorites.splice(index, 1);
-                }
-                localStorage.setItem('bau28_fav', JSON.stringify(favorites));
-                updateFavBadge();
-            }
+            // ==================== ИЗБРАННОЕ (ХРАНИМ ТОЛЬКО ID) ====================
+let favorites = JSON.parse(localStorage.getItem('bau28_fav') || '[]'); // теперь массив ID
 
-            function updateFavBadge() {
-                if (favorites.length > 0) {
-                    favBadge.style.display = 'block';
-                    favBadge.textContent = favorites.length;
-                } else {
-                    favBadge.style.display = 'none';
+function toggleFavorite(product) {
+    const id = product.id;
+    const index = favorites.indexOf(id);
+    if (index === -1) {
+        favorites.push(id);
+    } else {
+        favorites.splice(index, 1);
+    }
+    localStorage.setItem('bau28_fav', JSON.stringify(favorites));
+    updateFavBadge();
+    renderProducts(); // перерисовываем, чтобы обновить сердечки
+}
+
+function isFavorite(id) {
+    return favorites.includes(id);
+}
+
+function updateFavBadge() {
+    document.getElementById('hotbarFavBadge').textContent = favorites.length;
+    // также обновляем бейдж в шапке (если остался)
+    const favBadge = document.getElementById('favBadge');
+    if (favBadge) {
+        if (favorites.length > 0) {
+            favBadge.style.display = 'block';
+            favBadge.textContent = favorites.length;
+        } else {
+            favBadge.style.display = 'none';
+        }
+    }
+}
+
+function renderFavItems() {
+    const container = document.getElementById('favItems');
+    if (favorites.length === 0) {
+        container.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:20px;">Нет избранных</div>';
+        return;
+    }
+
+    let html = '';
+    favorites.forEach(id => {
+        // ищем товар во всех категориях
+        let product = null;
+        for (let cat in products) {
+            if (cat === 'vape') {
+                for (let sub in products.vape) {
+                    const found = products.vape[sub]?.find(p => p.id === id);
+                    if (found) {
+                        product = found;
+                        break;
+                    }
+                }
+            } else {
+                const found = products[cat]?.find(p => p.id === id);
+                if (found) {
+                    product = found;
+                    break;
                 }
             }
+            if (product) break;
+        }
 
-            function renderFavItems() {
-                const container = document.getElementById('favItems');
-                if (favorites.length === 0) {
-                    container.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:20px;">Нет избранных</div>';
-                    return;
-                }
-                container.innerHTML = favorites.map(p => {
-                    const price = p.discount ? Math.round(p.price * (1 - p.discount/100)) : p.price;
-                    return `
-                    <div class="cart-item-modern">
-                        <div class="cart-item-left">
-                            <span class="cart-item-emoji">🛍️</span>
-                            <div class="cart-item-info">
-                                <span class="cart-item-name">${p.name}</span>
-                                <span class="cart-item-price">${formatPrice(price)}</span>
-                            </div>
-                        </div>
-                        <button class="btn-add" style="width:auto; padding:8px 16px;" data-id="${p.id}">В корзину</button>
+        if (!product) {
+            // товар удалён – пропускаем, но можно показать заглушку или удалить из избранного
+            // для чистоты – удалим ID из массива
+            favorites = favorites.filter(fid => fid !== id);
+            localStorage.setItem('bau28_fav', JSON.stringify(favorites));
+            updateFavBadge();
+            return;
+        }
+
+        const price = product.discount ? Math.round(product.price * (1 - product.discount/100)) : product.price;
+        html += `
+            <div class="cart-item-modern">
+                <div class="cart-item-left">
+                    <span class="cart-item-emoji">🛍️</span>
+                    <div class="cart-item-info">
+                        <span class="cart-item-name">${product.name}</span>
+                        <span class="cart-item-price">${formatPrice(price)}</span>
                     </div>
-                `}).join('');
-            }
+                </div>
+                <button class="btn-add" style="width:auto; padding:8px 16px;" data-id="${product.id}">В корзину</button>
+            </div>
+        `;
+    });
 
+    container.innerHTML = html;
+    // Обработчики на кнопки внутри избранного
+    container.querySelectorAll('.btn-add').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = btn.dataset.id;
+            const product = findProduct(id);
+            if (product) {
+                addToCart(product);
+                // можно закрыть модалку или нет – по желанию
+            }
+        });
+    });
+}
             // ==================== ОТПРАВКА ЗАКАЗА ====================
             orderBtn.addEventListener('click', async () => {
                 if (cart.length === 0) return;
@@ -1396,11 +1521,28 @@
                 window.Telegram.WebApp.ready();
                 window.Telegram.WebApp.expand();
                 window.Telegram.WebApp.setHeaderColor('#0d0914');
+
+                // Открытие модалок по кнопкам хот-бара
+document.getElementById('hotbarCart').addEventListener('click', () => {
+    renderCartItems();
+    cartModal.classList.add('active');
+});
+
+document.getElementById('hotbarFav').addEventListener('click', () => {
+    renderFavItems();
+    favModal.classList.add('active');
+});
+
+document.getElementById('hotbarWheel').addEventListener('click', () => {
+    wheelModal.classList.add('active');
+    fetchWheelPrizes(); // если нужно загрузить призы
+});
             }
         });
     </script>
 </body>
 </html>
+
 
 
 
