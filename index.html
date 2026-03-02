@@ -55,7 +55,7 @@
             z-index: 10;
             max-width: 500px;
             margin: 0 auto;
-            padding: 20px 16px 90px; /* отступ снизу под хотбар */
+            padding: 20px 16px 90px; /* отступ под хотбар */
         }
 
         .header {
@@ -82,12 +82,29 @@
         }
 
         .header-gif {
-            cursor: pointer; /* для пасхалки */
+            cursor: pointer;
         }
         .header-gif img {
             max-height: 40px;
             width: auto;
             border-radius: 8px;
+            transition: transform 0.2s;
+        }
+        .header-gif img:hover {
+            transform: scale(1.1);
+        }
+
+        /* Анимации для кнопок */
+        .btn-add, .btn-fav, .hotbar-btn, .pill, .cat-btn, .spin-btn-modern, .promo-btn-modern, .order-btn-modern, .close-btn {
+            transition: all 0.2s ease;
+        }
+        .btn-add:hover, .btn-fav:hover, .hotbar-btn:hover, .pill:hover, .cat-btn:hover, .spin-btn-modern:hover, .promo-btn-modern:hover, .order-btn-modern:hover, .close-btn:hover {
+            transform: scale(0.95);
+            filter: brightness(1.2);
+        }
+        .btn-add:active, .btn-fav:active, .hotbar-btn:active, .pill:active, .cat-btn:active, .spin-btn-modern:active, .promo-btn-modern:active, .order-btn-modern:active, .close-btn:active {
+            transform: scale(0.9);
+            filter: brightness(1.4);
         }
 
         .categories {
@@ -110,7 +127,6 @@
             background-size: cover;
             background-position: center;
             border: 2px solid transparent;
-            transition: 0.3s;
             display: flex;
             align-items: flex-end;
             justify-content: center;
@@ -163,7 +179,6 @@
             color: var(--text-muted);
             cursor: pointer;
             white-space: nowrap;
-            transition: 0.2s;
         }
 
         .pill.active {
@@ -187,9 +202,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            transition: 0.3s ease;
             animation: fadeIn 0.4s ease forwards;
-            /* фиксируем размер, чтобы избежать прыжков */
             width: 100%;
         }
 
@@ -198,7 +211,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .product-card:active { transform: scale(0.97); }
+        .product-card:active { transform: scale(0.97); transition: transform 0.1s; }
 
         .product-img {
             width: 100%;
@@ -279,8 +292,7 @@
             padding: 10px;
             border-radius: 14px;
             cursor: pointer;
-            transition: 0.2s;
-            min-width: 0; /* предотвращает растягивание */
+            min-width: 0;
         }
         .btn-add:active { transform: scale(0.95); }
 
@@ -292,7 +304,6 @@
             display: flex; align-items: center; justify-content: center;
             font-size: 18px;
             cursor: pointer;
-            transition: 0.2s;
             flex-shrink: 0;
         }
         .btn-fav:active { transform: scale(0.9); }
@@ -323,13 +334,9 @@
             align-items: center;
             cursor: pointer;
             position: relative;
-            transition: transform 0.1s ease;
-            min-width: 60px; /* фиксированная ширина */
+            min-width: 60px;
         }
-
-        .hotbar-btn:active {
-            transform: scale(0.9);
-        }
+        .hotbar-btn:active { transform: scale(0.9); }
 
         .hotbar-icon {
             font-size: 24px;
@@ -373,13 +380,14 @@
 
         .bottom-sheet {
             position: absolute;
-            bottom: 0; left: 0; width: 100%;
+            bottom: 0; left: 0;
+            width: 100%;
             background: #1a1122;
             border-radius: 32px 32px 0 0;
             border-top: 2px solid var(--primary);
             padding: 24px 20px 40px;
             transform: translateY(100%);
-            transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
             max-height: 85vh;
             display: flex;
             flex-direction: column;
@@ -410,6 +418,7 @@
             display: flex; align-items: center; justify-content: center;
             cursor: pointer;
         }
+        .close-btn:active { transform: scale(0.9); }
 
         .sheet-body {
             overflow-y: auto;
@@ -632,10 +641,8 @@
         /* Пасхалка */
         .easter-egg {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: rgba(0,0,0,0.9);
             display: flex;
             align-items: center;
@@ -1333,6 +1340,36 @@
             closeCartBtn.addEventListener('click', () => cartModal.classList.remove('active'));
             closeFavBtn.addEventListener('click', () => favModal.classList.remove('active'));
             closeWheelBtn.addEventListener('click', () => wheelModal.classList.remove('active'));
+
+            // Закрытие свайпом вниз
+            const sheets = [cartModal, favModal, wheelModal, productModal];
+            sheets.forEach(modal => {
+                let startY = 0;
+                const sheet = modal.querySelector('.bottom-sheet');
+                if (!sheet) return;
+
+                modal.addEventListener('touchstart', (e) => {
+                    if (e.target === modal) return; // только если начали тянуть сам лист
+                    const touch = e.touches[0];
+                    startY = touch.clientY;
+                }, { passive: true });
+
+                modal.addEventListener('touchmove', (e) => {
+                    if (startY === 0) return;
+                    const touch = e.touches[0];
+                    const diff = touch.clientY - startY;
+                    if (diff > 50) {
+                        modal.classList.remove('active');
+                        startY = 0;
+                    }
+                }, { passive: true });
+
+                modal.addEventListener('touchend', () => {
+                    startY = 0;
+                });
+            });
+
+            // Закрытие по клику на оверлей
             [cartModal, favModal, wheelModal, productModal].forEach(modal => {
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal) modal.classList.remove('active');
