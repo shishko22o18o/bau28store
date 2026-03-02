@@ -16,6 +16,8 @@
             --text-muted: #a097b0;
             --danger: #ff4444;
             --heart: #ff4081;
+            --success: #4caf50;
+            --gold: #ffd700;
         }
 
         * {
@@ -75,7 +77,7 @@
 
         .top-actions {
             display: flex;
-            gap: 12px;
+            gap: 8px;
             align-items: center;
         }
 
@@ -312,6 +314,7 @@
         }
         .btn-fav:active { transform: scale(0.9); }
 
+        /* Улучшенная корзина */
         .cart-fixed {
             position: fixed;
             bottom: 24px;
@@ -319,49 +322,81 @@
             transform: translateX(-50%);
             width: calc(100% - 32px);
             max-width: 400px;
-            background: rgba(20, 15, 28, 0.85);
+            background: linear-gradient(135deg, #1a0f28 0%, #2d1a3a 100%);
             backdrop-filter: blur(20px);
-            border: 1px solid var(--surface-border);
-            border-radius: 30px;
-            padding: 8px 8px 8px 20px;
+            border: 1px solid var(--primary);
+            border-radius: 60px;
+            padding: 10px 10px 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 100;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px var(--primary-glow);
+            box-shadow: 0 10px 40px rgba(184, 41, 255, 0.3);
             transition: 0.3s ease;
         }
 
         .cart-fixed.hidden { transform: translate(-50%, 150%); }
 
-        .cart-info {
+        .cart-icon-wrapper {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .cart-total {
-            font-weight: 800;
-            font-size: 16px;
+        .cart-icon-large {
+            font-size: 32px;
+            position: relative;
         }
 
-        .checkout-btn {
+        .cart-count-large {
+            position: absolute;
+            top: -8px; right: -8px;
+            background: var(--heart);
+            color: white;
+            font-size: 13px;
+            font-weight: 800;
+            min-width: 22px; height: 22px;
+            border-radius: 11px;
+            display: flex; align-items: center; justify-content: center;
+            padding: 0 5px;
+            border: 2px solid var(--bg-color);
+        }
+
+        .cart-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .cart-total-large {
+            font-weight: 800;
+            font-size: 18px;
+            color: #dbb6ff;
+        }
+
+        .checkout-btn-modern {
             background: var(--primary);
             border: none;
             color: white;
             font-weight: 700;
-            padding: 12px 24px;
-            border-radius: 24px;
+            padding: 14px 28px;
+            border-radius: 40px;
             cursor: pointer;
+            font-size: 15px;
+            box-shadow: 0 5px 15px rgba(184, 41, 255, 0.4);
             transition: 0.2s;
         }
-        .checkout-btn:active { transform: scale(0.95); }
+        .checkout-btn-modern:active { transform: scale(0.95); }
 
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(4px);
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
             z-index: 200;
             opacity: 0;
             pointer-events: none;
@@ -372,9 +407,9 @@
         .bottom-sheet {
             position: absolute;
             bottom: 0; left: 0; width: 100%;
-            background: #150f1d;
+            background: #1a1122;
             border-radius: 32px 32px 0 0;
-            border-top: 1px solid var(--surface-border);
+            border-top: 2px solid var(--primary);
             padding: 24px 20px 40px;
             transform: translateY(100%);
             transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -414,90 +449,156 @@
             flex-grow: 1;
         }
 
-        .cart-item {
+        .cart-item-modern {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--surface);
+            background: rgba(0,0,0,0.3);
             padding: 12px 16px;
             border-radius: 20px;
             margin-bottom: 10px;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid var(--surface-border);
         }
 
-        .cart-item-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
-        .cart-item-price { color: var(--primary); font-weight: 800; }
-
-        .qty-controls {
+        .cart-item-left {
             display: flex;
             align-items: center;
             gap: 12px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 20px;
+        }
+
+        .cart-item-emoji {
+            font-size: 32px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
             padding: 4px;
         }
 
-        .qty-btn {
-            background: var(--surface);
-            border: none; color: white;
-            width: 28px; height: 28px;
-            border-radius: 50%;
-            font-weight: 800; cursor: pointer;
-        }
-
-        .promo-section {
+        .cart-item-info {
             display: flex;
-            gap: 8px;
-            margin: 15px 0;
+            flex-direction: column;
         }
 
-        .promo-input {
+        .cart-item-name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .cart-item-price {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .cart-item-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .qty-modern {
+            display: flex;
+            align-items: center;
+            background: rgba(0,0,0,0.5);
+            border-radius: 40px;
+            padding: 4px;
+        }
+
+        .qty-modern button {
+            background: none;
+            border: none;
+            color: white;
+            width: 30px; height: 30px;
+            border-radius: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .qty-modern button:active { background: rgba(255,255,255,0.1); }
+
+        .qty-modern span {
+            min-width: 30px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .remove-item-modern {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 20px;
+            cursor: pointer;
+            width: 36px; height: 36px;
+            border-radius: 18px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .remove-item-modern:active { background: rgba(255,255,255,0.1); }
+
+        .promo-section-modern {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .promo-input-modern {
             flex: 2;
             background: rgba(0,0,0,0.3);
             border: 1px solid var(--surface-border);
-            border-radius: 20px;
-            padding: 12px 15px;
+            border-radius: 30px;
+            padding: 14px 18px;
             color: white;
             font-size: 14px;
         }
 
-        .promo-btn {
-            background: var(--primary);
+        .promo-btn-modern {
+            background: var(--secondary);
             border: none;
             color: white;
             font-weight: 600;
             padding: 0 20px;
-            border-radius: 20px;
+            border-radius: 30px;
             cursor: pointer;
         }
 
-        .discount-row {
+        .summary-row {
             display: flex;
             justify-content: space-between;
-            color: #4caf50;
-            font-weight: 600;
-            margin-top: 10px;
+            padding: 12px 0;
+            font-size: 16px;
         }
 
-        .wheel-btn {
-            background: var(--primary);
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 20px;
+            font-weight: 800;
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .order-btn-modern {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: none;
             color: white;
-            font-weight: 700;
-            padding: 8px 12px;
-            border-radius: 20px;
+            font-weight: 800;
+            font-size: 18px;
+            padding: 18px;
+            border-radius: 40px;
             cursor: pointer;
-            margin-left: 8px;
+            margin-top: 20px;
+            box-shadow: 0 5px 20px rgba(184, 41, 255, 0.4);
         }
 
         .wheel-container {
             text-align: center;
             margin: 20px 0;
+            position: relative;
         }
 
-        .wheel-image {
-            width: 200px;
-            height: 200px;
+        .wheel-canvas {
+            width: 250px;
+            height: 250px;
             border-radius: 50%;
             background: conic-gradient(
                 #ff6b6b 0deg 45deg,
@@ -516,47 +617,40 @@
 
         .wheel-pointer {
             width: 0; height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-top: 30px solid gold;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 40px solid gold;
             position: absolute;
-            top: -5px;
+            top: -10px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 10;
         }
 
-        .spin-btn {
+        .spin-btn-modern {
             background: var(--primary);
             border: none;
             color: white;
             font-weight: 700;
-            padding: 12px 24px;
-            border-radius: 30px;
+            padding: 14px 30px;
+            border-radius: 40px;
             cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 5px 15px rgba(184, 41, 255, 0.4);
         }
 
-        .sheet-footer {
+        .prize-result {
             margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .order-btn {
-            width: 100%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border: none; color: white;
-            font-weight: 800; font-size: 16px;
-            padding: 16px;
-            border-radius: 20px;
-            cursor: pointer;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--gold);
         }
 
         .notification {
             position: fixed;
             top: -60px; left: 50%;
             transform: translateX(-50%);
-            background: rgba(184, 41, 255, 0.9);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             backdrop-filter: blur(10px);
             color: white;
             padding: 12px 24px;
@@ -564,7 +658,7 @@
             font-weight: 600;
             z-index: 1000;
             transition: 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
         .notification.show { top: 20px; }
     </style>
@@ -576,10 +670,12 @@
         <div class="header">
             <div class="logo">Bau28</div>
             <div class="top-actions">
+                <button class="top-btn" id="wheelBtn">
+                    🎁
+                </button>
                 <button class="top-btn" id="topFavBtn">
                     ❤️<span class="badge" id="favBadge" style="display:none;">0</span>
                 </button>
-                <button class="top-btn wheel-btn" id="wheelBtn">🎁</button>
             </div>
         </div>
 
@@ -608,42 +704,43 @@
         <div class="products-grid" id="productsGrid"></div>
     </div>
 
+    <!-- Новая улучшенная корзина -->
     <div class="cart-fixed hidden" id="floatingCart">
-        <div class="cart-info">
-            <div style="font-size:24px;">🛒</div>
-            <div>
-                <div style="font-size: 12px; color: var(--text-muted);">В корзине <span id="cartCount">0</span> шт.</div>
-                <div class="cart-total" id="cartTotal">0 ₽</div>
+        <div class="cart-icon-wrapper">
+            <div class="cart-icon-large">
+                🛒<span class="cart-count-large" id="cartCount">0</span>
+            </div>
+            <div class="cart-details">
+                <span class="cart-label">Корзина</span>
+                <span class="cart-total-large" id="cartTotal">0 ₽</span>
             </div>
         </div>
-        <button class="checkout-btn" id="openCartBtn">Оформить</button>
+        <button class="checkout-btn-modern" id="openCartBtn">Оформить</button>
     </div>
 
-    <!-- Модалка корзины -->
+    <!-- Модалка корзины (новый дизайн) -->
     <div class="modal-overlay" id="cartModal">
         <div class="bottom-sheet" onclick="event.stopPropagation()">
             <div class="sheet-handle"></div>
             <div class="sheet-header">
-                <span>Корзина</span>
+                <span>🛒 Твоя корзина</span>
                 <button class="close-btn" id="closeCartBtn">✕</button>
             </div>
             <div class="sheet-body" id="cartItems"></div>
-            <div class="promo-section">
-                <input type="text" class="promo-input" id="promoCode" placeholder="Промокод">
-                <button class="promo-btn" id="applyPromo">Применить</button>
+            <div class="promo-section-modern">
+                <input type="text" class="promo-input-modern" id="promoCode" placeholder="Промокод">
+                <button class="promo-btn-modern" id="applyPromo">Применить</button>
             </div>
             <div id="promoMessage" style="color: #ffaa00; font-size: 13px; margin-bottom: 10px;"></div>
-            <div class="discount-row" id="discountRow" style="display: none;">
+            <div class="summary-row" id="discountRow" style="display: none;">
                 <span>Скидка:</span>
                 <span id="discountAmount">0 ₽</span>
             </div>
-            <div class="sheet-footer">
-                <div style="display:flex; justify-content:space-between; margin-bottom:16px; font-size:18px; font-weight:800;">
-                    <span>Итого:</span>
-                    <span id="modalTotal">0 ₽</span>
-                </div>
-                <button class="order-btn" id="orderBtn">Отправить заказ</button>
+            <div class="total-row">
+                <span>Итого:</span>
+                <span id="modalTotal">0 ₽</span>
             </div>
+            <button class="order-btn-modern" id="orderBtn">Оформить заказ</button>
         </div>
     </div>
 
@@ -652,7 +749,7 @@
         <div class="bottom-sheet" onclick="event.stopPropagation()">
             <div class="sheet-handle"></div>
             <div class="sheet-header">
-                <span>Избранное</span>
+                <span>❤️ Избранное</span>
                 <button class="close-btn" id="closeFavBtn">✕</button>
             </div>
             <div class="sheet-body" id="favItems"></div>
@@ -668,14 +765,12 @@
                 <button class="close-btn" id="closeWheelBtn">✕</button>
             </div>
             <div class="sheet-body">
-                <div style="text-align: center; padding: 10px;">
-                    <p>Крутите колесо и получите дополнительную скидку на текущий заказ!</p>
-                    <div class="wheel-container">
-                        <div class="wheel-pointer"></div>
-                        <div class="wheel-image" id="wheel"></div>
-                    </div>
-                    <button class="spin-btn" id="spinWheel">Крутить</button>
-                    <div id="wheelResult" style="margin-top: 20px; font-weight: 800;"></div>
+                <div class="wheel-container">
+                    <div class="wheel-pointer"></div>
+                    <div class="wheel-canvas" id="wheel"></div>
+                    <input type="text" class="promo-input-modern" id="wheelPromoCode" placeholder="Введите промокод для колеса" style="margin-bottom: 15px;">
+                    <button class="spin-btn-modern" id="spinWheel">Крутить</button>
+                    <div class="prize-result" id="wheelResult"></div>
                 </div>
             </div>
         </div>
@@ -694,7 +789,7 @@
                     <img id="modalProductImage" src="" style="width: 100%; border-radius: 20px; max-height: 250px; object-fit: contain; background: #1a0a24;">
                     <p id="modalProductDescription" style="margin: 15px 0; color: var(--text-muted);"></p>
                     <div style="font-size: 24px; font-weight: 800; color: #dbb6ff;" id="modalProductPrice"></div>
-                    <button class="add-to-cart" style="width: 100%; margin-top: 20px;" id="modalAddToCart">В корзину</button>
+                    <button class="btn-add" style="width: 100%; margin-top: 20px;" id="modalAddToCart">В корзину</button>
                 </div>
             </div>
         </div>
@@ -716,7 +811,10 @@
             let cart = JSON.parse(localStorage.getItem('bau28_cart') || '[]');
             let favorites = JSON.parse(localStorage.getItem('bau28_fav') || '[]');
             let appliedPromo = null; // {code, discount, type}
-            let wheelDiscount = 0; // дополнительная скидка от колеса
+            let wheelDiscount = 0; // скидка от колеса
+            let wheelPrizes = [];   // призы колеса, загруженные с сервера
+            let wheelActive = false; // активировано ли колесо (после ввода промокода)
+            let currentProduct = null;
 
             // ==================== DOM ЭЛЕМЕНТЫ ====================
             const productsGrid = document.getElementById('productsGrid');
@@ -742,6 +840,7 @@
             const spinBtn = document.getElementById('spinWheel');
             const wheelResultDiv = document.getElementById('wheelResult');
             const wheel = document.getElementById('wheel');
+            const wheelPromoInput = document.getElementById('wheelPromoCode');
             const productModal = document.getElementById('productModal');
             const closeProductBtn = document.getElementById('closeProductBtn');
             const modalProductTitle = document.getElementById('modalProductTitle');
@@ -749,7 +848,6 @@
             const modalProductDescription = document.getElementById('modalProductDescription');
             const modalProductPrice = document.getElementById('modalProductPrice');
             const modalAddToCart = document.getElementById('modalAddToCart');
-            let currentProduct = null;
 
             // ==================== ВСПОМОГАТЕЛЬНЫЕ ====================
             const formatPrice = (p) => p.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
@@ -789,7 +887,7 @@
                         console.warn('Не удалось загрузить товары с сервера, используем демо-данные');
                     }
                 }
-                // Демо-данные (с описанием)
+                // Демо-данные
                 products = {
                     clothes: [
                         { id: 'c1', name: 'Футболка Oversize', description: 'Хлопок 100%, свободный крой', price: 2990, img: 'images/tovary/futbolka.jpg', discount: 0, isNew: true },
@@ -850,7 +948,6 @@
                     `;
                 }).join('');
 
-                // Обработчики
                 document.querySelectorAll('.product-card').forEach(card => {
                     card.addEventListener('click', (e) => {
                         if (!e.target.closest('button')) {
@@ -931,11 +1028,10 @@
 
             function updateCart() {
                 localStorage.setItem('bau28_cart', JSON.stringify(cart));
-                // Расчёт с учётом промокода и колеса
                 let subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
                 let promoDiscount = 0;
-                if (appliedPromo) {
-                    if (appliedPromo.type === 'percent') {
+                if (appliedPromo && appliedPromo.type === 'discount') {
+                    if (appliedPromo.discount_type === 'percent') {
                         promoDiscount = Math.round(subtotal * appliedPromo.discount / 100);
                     } else {
                         promoDiscount = appliedPromo.discount;
@@ -952,7 +1048,6 @@
                 if (totalItems > 0) floatingCart.classList.remove('hidden');
                 else floatingCart.classList.add('hidden');
 
-                // Отображение скидки
                 if (promoDiscount > 0 || wheelDiscount > 0) {
                     discountRow.style.display = 'flex';
                     discountAmountSpan.textContent = `-${formatPrice(promoDiscount + wheelDiscount)}`;
@@ -969,19 +1064,30 @@
                     return;
                 }
                 cartItemsDiv.innerHTML = cart.map(item => `
-                    <div class="cart-item">
-                        <div>
-                            <div class="cart-item-title">${item.name}</div>
-                            <div class="cart-item-price">${formatPrice(item.price)}</div>
+                    <div class="cart-item-modern">
+                        <div class="cart-item-left">
+                            <span class="cart-item-emoji">🛍️</span>
+                            <div class="cart-item-info">
+                                <span class="cart-item-name">${item.name}</span>
+                                <span class="cart-item-price">${formatPrice(item.price)}</span>
+                            </div>
                         </div>
-                        <div class="qty-controls">
-                            <button class="qty-btn" onclick="changeQty('${item.id}', -1)">−</button>
-                            <span style="font-weight:700; width:20px; text-align:center;">${item.quantity}</span>
-                            <button class="qty-btn" onclick="changeQty('${item.id}', 1)">+</button>
+                        <div class="cart-item-right">
+                            <div class="qty-modern">
+                                <button onclick="changeQty('${item.id}', -1)">−</button>
+                                <span>${item.quantity}</span>
+                                <button onclick="changeQty('${item.id}', 1)">+</button>
+                            </div>
+                            <button class="remove-item-modern" onclick="removeFromCart('${item.id}')">✕</button>
                         </div>
                     </div>
                 `).join('');
             }
+
+            window.removeFromCart = function(id) {
+                cart = cart.filter(i => i.id !== id);
+                updateCart();
+            };
 
             // ==================== ПРОМОКОДЫ ====================
             applyPromoBtn.addEventListener('click', async () => {
@@ -999,8 +1105,16 @@
                     });
                     const data = await response.json();
                     if (data.valid) {
-                        appliedPromo = { code, discount: data.discount, type: data.type };
-                        promoMessage.textContent = `✅ Промокод применён: скидка ${data.discount}${data.type === 'percent' ? '%' : '₽'}`;
+                        if (data.type === 'wheel') {
+                            // Активируем колесо
+                            wheelActive = true;
+                            wheelPromoInput.value = code;
+                            promoMessage.textContent = '✅ Промокод активирован! Теперь крутите колесо.';
+                            wheelModal.classList.add('active');
+                        } else {
+                            appliedPromo = { code, discount: data.discount, type: 'discount', discount_type: data.discount_type };
+                            promoMessage.textContent = `✅ Промокод применён: скидка ${data.discount}${data.discount_type === 'percent' ? '%' : '₽'}`;
+                        }
                     } else {
                         appliedPromo = null;
                         promoMessage.textContent = data.error || 'Неверный код';
@@ -1013,28 +1127,93 @@
             });
 
             // ==================== КОЛЕСО ФОРТУНЫ ====================
-            wheelBtn.addEventListener('click', () => wheelModal.classList.add('active'));
+            wheelBtn.addEventListener('click', () => {
+                wheelModal.classList.add('active');
+                // Загружаем призы при открытии
+                fetchWheelPrizes();
+            });
+
             closeWheelBtn.addEventListener('click', () => wheelModal.classList.remove('active'));
             wheelModal.addEventListener('click', (e) => {
                 if (e.target === wheelModal) wheelModal.classList.remove('active');
             });
 
-            spinBtn.addEventListener('click', () => {
-                if (cart.length === 0) {
-                    wheelResultDiv.textContent = 'Сначала добавьте товары в корзину!';
+            async function fetchWheelPrizes() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/wheel/prizes`);
+                    if (response.ok) {
+                        wheelPrizes = await response.json();
+                    }
+                } catch (e) {
+                    console.warn('Не удалось загрузить призы колеса');
+                }
+            }
+
+            spinBtn.addEventListener('click', async () => {
+                const code = wheelPromoInput.value.trim().toUpperCase();
+                if (!code) {
+                    wheelResultDiv.textContent = 'Введите промокод для колеса';
                     return;
                 }
+                // Проверяем, что промокод активирован (можно повторно проверить на сервере)
+                // Упростим: проверяем, что код валидный и типа wheel
+                try {
+                    const resp = await fetch(`${API_BASE_URL}/api/check_promo`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ code })
+                    });
+                    const data = await resp.json();
+                    if (!data.valid || data.type !== 'wheel') {
+                        wheelResultDiv.textContent = 'Неверный промокод для колеса';
+                        return;
+                    }
+                } catch (e) {
+                    wheelResultDiv.textContent = 'Ошибка проверки промокода';
+                    return;
+                }
+
+                if (wheelPrizes.length === 0) {
+                    wheelResultDiv.textContent = 'Нет доступных призов';
+                    return;
+                }
+
                 // Анимация вращения
                 const rotations = 5 + Math.random() * 3;
                 const degrees = rotations * 360 + Math.random() * 360;
                 wheel.style.transform = `rotate(${degrees}deg)`;
                 
-                // Вычисляем результат (случайный процент 5-20)
                 setTimeout(() => {
-                    const discountPercent = Math.floor(Math.random() * 16) + 5; // 5..20
-                    const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
-                    wheelDiscount = Math.round(subtotal * discountPercent / 100);
-                    wheelResultDiv.innerHTML = `🎉 Поздравляем! Вы получили скидку ${discountPercent}% (${formatPrice(wheelDiscount)})!`;
+                    // Выбираем случайный приз с учётом вероятности
+                    const totalWeight = wheelPrizes.reduce((s, p) => s + (p.probability || 1), 0);
+                    let rand = Math.random() * totalWeight;
+                    let selected = null;
+                    for (let p of wheelPrizes) {
+                        if (rand < (p.probability || 1)) {
+                            selected = p;
+                            break;
+                        }
+                        rand -= (p.probability || 1);
+                    }
+                    if (!selected) selected = wheelPrizes[0];
+
+                    // Применяем приз
+                    if (selected.type === 'percent') {
+                        const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+                        wheelDiscount = Math.round(subtotal * selected.value / 100);
+                    } else if (selected.type === 'fixed') {
+                        wheelDiscount = selected.value;
+                    } else if (selected.type === 'bonus') {
+                        // Можно реализовать бонусные баллы (пока не используем)
+                        wheelDiscount = 0;
+                    } else if (selected.type === 'shipping') {
+                        // Бесплатная доставка (не скидка, а отдельный флаг)
+                        // Для простоты добавим как скидку 0, но отметим
+                        wheelDiscount = 0;
+                        // В реальности нужно добавить поле shipping_free в корзину
+                    }
+
+                    wheelResultDiv.innerHTML = `🎉 Ваш приз: ${selected.description}!`;
                     updateCart();
                 }, 3000);
             });
@@ -1069,10 +1248,13 @@
                 container.innerHTML = favorites.map(p => {
                     const price = p.discount ? Math.round(p.price * (1 - p.discount/100)) : p.price;
                     return `
-                    <div class="cart-item">
-                        <div>
-                            <div class="cart-item-title">${p.name}</div>
-                            <div class="cart-item-price">${formatPrice(price)}</div>
+                    <div class="cart-item-modern">
+                        <div class="cart-item-left">
+                            <span class="cart-item-emoji">🛍️</span>
+                            <div class="cart-item-info">
+                                <span class="cart-item-name">${p.name}</span>
+                                <span class="cart-item-price">${formatPrice(price)}</span>
+                            </div>
                         </div>
                         <button class="btn-add" style="width:auto; padding:8px 16px;" data-id="${p.id}">В корзину</button>
                     </div>
@@ -1083,6 +1265,11 @@
             orderBtn.addEventListener('click', async () => {
                 if (cart.length === 0) return;
                 
+                const subtotal = cart.reduce((s,i) => s + i.price*i.quantity, 0);
+                const promoDiscount = appliedPromo && appliedPromo.type === 'discount' ? 
+                    (appliedPromo.discount_type === 'percent' ? Math.round(subtotal * appliedPromo.discount / 100) : appliedPromo.discount) : 0;
+                const total = subtotal - promoDiscount - wheelDiscount;
+
                 const orderData = {
                     items: cart.map(item => ({
                         id: item.id,
@@ -1090,11 +1277,11 @@
                         quantity: item.quantity,
                         price: item.price
                     })),
-                    total: cart.reduce((s,i) => s + i.price*i.quantity, 0) - wheelDiscount - (appliedPromo ? (appliedPromo.type === 'percent' ? Math.round(cart.reduce((s,i) => s + i.price*i.quantity, 0) * appliedPromo.discount / 100) : appliedPromo.discount) : 0),
-                    promo: appliedPromo ? appliedPromo.code : undefined
+                    total: total,
+                    promo: appliedPromo ? appliedPromo.code : undefined,
+                    wheel_discount: wheelDiscount
                 };
                 
-                // Отправка в Telegram
                 const tg = window.Telegram?.WebApp;
                 if (tg && tg.sendData) {
                     tg.sendData(JSON.stringify(orderData));
@@ -1102,7 +1289,6 @@
                     alert('Тестовый режим. Заказ: ' + JSON.stringify(orderData));
                 }
                 
-                // Отправка на сервер
                 if (API_BASE_URL) {
                     try {
                         await fetch(`${API_BASE_URL}/api/order`, {
