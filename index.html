@@ -256,10 +256,8 @@
             font-size: 11px;
             color: var(--text-muted);
             margin-bottom: 8px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            /* убираем ограничение по высоте, текст переносится */
+            word-wrap: break-word;
         }
 
         .product-price {
@@ -818,15 +816,13 @@
             let wheelPrizes = [];
             let currentProduct = null;
 
-            // DOM элементы
+            // DOM элементы (только существующие)
             const productsGrid = document.getElementById('productsGrid');
             const notif = document.getElementById('notification');
             const cartModal = document.getElementById('cartModal');
             const closeCartBtn = document.getElementById('closeCartBtn');
             const cartItemsDiv = document.getElementById('cartItems');
             const modalTotalSpan = document.getElementById('modalTotal');
-            const cartCountSpan = document.getElementById('cartCount');
-            const cartTotalSpan = document.getElementById('cartTotal');
             const orderBtn = document.getElementById('orderBtn');
             const promoInput = document.getElementById('promoCode');
             const applyPromoBtn = document.getElementById('applyPromo');
@@ -860,9 +856,11 @@
             const formatPrice = (p) => p.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
 
             function showNotification(text) {
-                notif.textContent = text;
-                notif.classList.add('show');
-                setTimeout(() => notif.classList.remove('show'), 2000);
+                if (notif) {
+                    notif.textContent = text;
+                    notif.classList.add('show');
+                    setTimeout(() => notif.classList.remove('show'), 2000);
+                }
             }
 
             function findProduct(id) {
@@ -1031,11 +1029,8 @@
                 if (total < 0) total = 0;
 
                 const totalItems = cart.reduce((s, i) => s + i.quantity, 0);
-                cartCountSpan.textContent = totalItems;
-                cartTotalSpan.textContent = formatPrice(total);
-                modalTotalSpan.textContent = formatPrice(total);
-
                 if (hotbarCartBadge) hotbarCartBadge.textContent = totalItems;
+                if (modalTotalSpan) modalTotalSpan.textContent = formatPrice(total);
 
                 if (promoDiscount > 0 || wheelDiscount > 0) {
                     discountRow.style.display = 'flex';
@@ -1048,6 +1043,7 @@
             }
 
             function renderCartItems() {
+                if (!cartItemsDiv) return;
                 if (cart.length === 0) {
                     cartItemsDiv.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:20px;">Корзина пуста</div>';
                     return;
@@ -1208,6 +1204,7 @@
 
             function renderFavItems() {
                 const container = document.getElementById('favItems');
+                if (!container) return;
                 if (favorites.length === 0) {
                     container.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:20px;">Нет избранных</div>';
                     return;
@@ -1344,12 +1341,13 @@
             // Закрытие свайпом вниз
             const sheets = [cartModal, favModal, wheelModal, productModal];
             sheets.forEach(modal => {
+                if (!modal) return;
                 let startY = 0;
                 const sheet = modal.querySelector('.bottom-sheet');
                 if (!sheet) return;
 
                 modal.addEventListener('touchstart', (e) => {
-                    if (e.target === modal) return; // только если начали тянуть сам лист
+                    if (e.target === modal) return;
                     const touch = e.touches[0];
                     startY = touch.clientY;
                 }, { passive: true });
@@ -1371,6 +1369,7 @@
 
             // Закрытие по клику на оверлей
             [cartModal, favModal, wheelModal, productModal].forEach(modal => {
+                if (!modal) return;
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal) modal.classList.remove('active');
                 });
@@ -1382,7 +1381,8 @@
                     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     currentCat = btn.dataset.cat;
-                    document.getElementById('vapeSubcats').style.display = currentCat === 'vape' ? 'flex' : 'none';
+                    const vapeSubcats = document.getElementById('vapeSubcats');
+                    if (vapeSubcats) vapeSubcats.style.display = currentCat === 'vape' ? 'flex' : 'none';
                     if (currentCat === 'vape') currentSub = 'liquids';
                     renderProducts();
                 });
@@ -1409,12 +1409,14 @@
             });
 
             // Пасхалка
-            easterEggTrigger.addEventListener('click', () => {
-                easterEggMessage.classList.add('show');
-                setTimeout(() => {
-                    easterEggMessage.classList.remove('show');
-                }, 3000);
-            });
+            if (easterEggTrigger && easterEggMessage) {
+                easterEggTrigger.addEventListener('click', () => {
+                    easterEggMessage.classList.add('show');
+                    setTimeout(() => {
+                        easterEggMessage.classList.remove('show');
+                    }, 3000);
+                });
+            }
 
             // Инициализация
             (async () => {
