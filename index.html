@@ -90,6 +90,27 @@
     object-fit: contain;
      
 }
+        .top-btn.square {
+    border-radius: 12px; /* квадратная форма с чуть скруглёнными углами */
+    width: 48px;         /* можно увеличить размер под иконку */
+    height: 48px;
+    padding: 0;
+    overflow: hidden;    /* чтобы иконка не вылезала */
+}
+
+.top-btn.square img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;   /* иконка заполнит всю кнопку */
+    display: block;
+}
+
+/* Счётчик избранного остаётся поверх */
+.top-btn.square .badge {
+    top: 0;
+    right: 0;
+    transform: translate(25%, -25%); /* немного сместить, чтобы был на углу */
+}
         }
 
         .top-actions {
@@ -691,9 +712,14 @@
         <img src="https://i.pinimg.com/originals/0d/ac/06/0dac06a5332d13e2a4e2dc30ba0c6411.gif?nii=t" alt="animation">
     </div>
     <div class="top-actions">
-         <button class="top-btn" id="wheelBtn">🎁</button>
-        <button class="top-btn" id="topFavBtn">❤️<span class="badge" id="favBadge">0</span></button>
-    </div>
+    <button class="top-btn square" id="wheelBtn">
+        <img src="images/wheel-icon.jpg" alt="Колесо фортуны">
+    </button>
+    <button class="top-btn square" id="topFavBtn">
+        <img src="images/fav-icon.jpg" alt="Избранное">
+        <span class="badge" id="favBadge" style="display:none;">0</span>
+    </button>
+</div>
 </div>
    
 
@@ -1364,6 +1390,7 @@
     </script>
 </body>
 </html>
+
 
 
 
