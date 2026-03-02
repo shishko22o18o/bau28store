@@ -55,7 +55,7 @@
             z-index: 10;
             max-width: 500px;
             margin: 0 auto;
-            padding: 20px 16px 90px; /* увеличен нижний отступ для хот-бара */
+            padding: 20px 16px 90px; /* отступ снизу под хотбар */
         }
 
         .header {
@@ -81,54 +81,13 @@
             100% { box-shadow: 0 0 5px #b829ff, 0 0 10px #b829ff, 0 0 15px #b829ff; }
         }
 
+        .header-gif {
+            cursor: pointer; /* для пасхалки */
+        }
         .header-gif img {
             max-height: 40px;
             width: auto;
             border-radius: 8px;
-        }
-
-        .top-actions {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .top-btn.square {
-            border-radius: 12px;
-            width: 48px;
-            height: 48px;
-            padding: 0;
-            overflow: hidden;
-            background: var(--surface);
-            border: 1px solid var(--surface-border);
-            backdrop-filter: blur(10px);
-            cursor: pointer;
-            position: relative;
-        }
-
-        .top-btn.square img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .top-btn.square .badge {
-            position: absolute;
-            top: 0;
-            right: 0;
-            transform: translate(25%, -25%);
-            background: var(--heart);
-            color: white;
-            font-size: 11px;
-            font-weight: 800;
-            min-width: 18px;
-            height: 18px;
-            border-radius: 9px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 4px;
-            border: 2px solid var(--bg-color);
         }
 
         .categories {
@@ -230,6 +189,8 @@
             flex-direction: column;
             transition: 0.3s ease;
             animation: fadeIn 0.4s ease forwards;
+            /* фиксируем размер, чтобы избежать прыжков */
+            width: 100%;
         }
 
         @keyframes fadeIn {
@@ -319,6 +280,7 @@
             border-radius: 14px;
             cursor: pointer;
             transition: 0.2s;
+            min-width: 0; /* предотвращает растягивание */
         }
         .btn-add:active { transform: scale(0.95); }
 
@@ -331,10 +293,11 @@
             font-size: 18px;
             cursor: pointer;
             transition: 0.2s;
+            flex-shrink: 0;
         }
         .btn-fav:active { transform: scale(0.9); }
 
-        /* Хот-бар */
+        /* Хотбар */
         .hotbar {
             position: fixed;
             bottom: 0;
@@ -361,6 +324,7 @@
             cursor: pointer;
             position: relative;
             transition: transform 0.1s ease;
+            min-width: 60px; /* фиксированная ширина */
         }
 
         .hotbar-btn:active {
@@ -394,7 +358,7 @@
             border: 1px solid var(--bg-color);
         }
 
-        /* Модальные окна */
+        /* Модалки */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -664,6 +628,31 @@
             box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
         .notification.show { top: 20px; }
+
+        /* Пасхалка */
+        .easter-egg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            color: var(--primary);
+            font-size: 48px;
+            font-weight: 900;
+            text-shadow: 0 0 20px var(--primary);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .easter-egg.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
     </style>
 </head>
 <body>
@@ -674,10 +663,9 @@
             <div class="logo">
                 <img src="images/logo.jpg" alt="Bau28">
             </div> 
-            <div class="header-gif">
+            <div class="header-gif" id="easterEggTrigger">
                 <img src="https://i.pinimg.com/originals/29/3a/55/293a55a10b33f45c07ecea5420ec70a6.gif?nii=t" alt="animation">
             </div>
-            <!-- Кнопки в шапке можно убрать, так как есть хот-бар -->
         </div>
 
         <div class="categories" id="categories">
@@ -800,12 +788,16 @@
         </button>
     </div>
 
+    <!-- Пасхалка -->
+    <div class="easter-egg" id="easterEggMessage">привет брат</div>
+
     <div class="notification" id="notification">✅ Добавлено</div>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const API_BASE_URL = 'https://bot-production-cf41.up.railway.app'; // замените на свой URL
+            // ⚠️ ЗАМЕНИТЕ НА URL ВАШЕГО БОТА
+            const API_BASE_URL = 'https://bot-production-cf41.up.railway.app';
 
             // Глобальные переменные
             let products = {};
@@ -813,7 +805,7 @@
             let currentSub = 'liquids';
             let currentFilter = 'all';
             let cart = JSON.parse(localStorage.getItem('bau28_cart') || '[]');
-            let favorites = JSON.parse(localStorage.getItem('bau28_fav') || '[]'); // массив ID
+            let favorites = JSON.parse(localStorage.getItem('bau28_fav') || '[]');
             let appliedPromo = null;
             let wheelDiscount = 0;
             let wheelPrizes = [];
@@ -854,8 +846,10 @@
             const hotbarWheel = document.getElementById('hotbarWheel');
             const hotbarCartBadge = document.getElementById('hotbarCartBadge');
             const hotbarFavBadge = document.getElementById('hotbarFavBadge');
+            const easterEggTrigger = document.getElementById('easterEggTrigger');
+            const easterEggMessage = document.getElementById('easterEggMessage');
 
-            // Вспомогательные функции
+            // Вспомогательные
             const formatPrice = (p) => p.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
 
             function showNotification(text) {
@@ -1319,7 +1313,7 @@
                 showNotification('🚀 Заказ оформлен!');
             });
 
-            // Модалки через хот-бар
+            // Модалки через хотбар
             hotbarCart.addEventListener('click', () => {
                 renderCartItems();
                 cartModal.classList.add('active');
@@ -1345,7 +1339,7 @@
                 });
             });
 
-            // Навигация
+            // Навигация по категориям
             document.querySelectorAll('.cat-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
@@ -1375,6 +1369,14 @@
                     if (btn.dataset.filter) currentFilter = btn.dataset.filter;
                     renderProducts();
                 });
+            });
+
+            // Пасхалка
+            easterEggTrigger.addEventListener('click', () => {
+                easterEggMessage.classList.add('show');
+                setTimeout(() => {
+                    easterEggMessage.classList.remove('show');
+                }, 3000);
             });
 
             // Инициализация
