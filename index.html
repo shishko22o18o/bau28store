@@ -333,7 +333,7 @@
             flex-shrink: 0;
         }
 
-        /* Хотбар */
+        /* Хотбар с иконками JPG */
         .hotbar {
             position: fixed;
             bottom: 0;
@@ -362,9 +362,15 @@
             min-width: 60px;
         }
 
-        .hotbar-icon {
-            font-size: 24px;
+        .hotbar-icon-img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
             margin-bottom: 2px;
+            filter: brightness(0.8); /* чтобы соответствовать цветовой гамме */
+        }
+        .hotbar-btn:hover .hotbar-icon-img {
+            filter: brightness(1);
         }
 
         .hotbar-label {
@@ -415,6 +421,7 @@
             max-height: 85vh;
             display: flex;
             flex-direction: column;
+            min-height: 0; /* важно для скролла внутренних элементов */
         }
         .modal-overlay.active .bottom-sheet { transform: translateY(0); }
 
@@ -447,6 +454,7 @@
             overflow-y: auto;
             flex-grow: 1;
             padding-right: 5px;
+            min-height: 0; /* критично для скролла */
         }
 
         .cart-item-modern {
@@ -826,24 +834,24 @@
         </div>
     </div>
 
-    <!-- Нижний хот-бар -->
+    <!-- Нижний хот-бар с JPG иконками -->
     <div class="hotbar" id="hotbar">
         <button class="hotbar-btn" id="hotbarCart">
-            <span class="hotbar-icon">🛒</span>
+            <img src="images/cart.jpg" class="hotbar-icon-img" alt="Корзина">
             <span class="hotbar-label">Корзина</span>
             <span class="hotbar-badge" id="hotbarCartBadge">0</span>
         </button>
         <button class="hotbar-btn" id="hotbarFav">
-            <span class="hotbar-icon">❤️</span>
+            <img src="images/fav.jpg" class="hotbar-icon-img" alt="Избранное">
             <span class="hotbar-label">Избранное</span>
             <span class="hotbar-badge" id="hotbarFavBadge">0</span>
         </button>
         <button class="hotbar-btn" id="hotbarWheel">
-            <span class="hotbar-icon">🎁</span>
+            <img src="images/wheel.jpg" class="hotbar-icon-img" alt="Колесо">
             <span class="hotbar-label">Колесо</span>
         </button>
         <button class="hotbar-btn" id="hotbarHistory">
-            <span class="hotbar-icon">🕒</span>
+            <img src="images/history.jpg" class="hotbar-icon-img" alt="История">
             <span class="hotbar-label">История</span>
         </button>
     </div>
@@ -871,10 +879,9 @@
             let wheelPrizes = [];
             let currentProduct = null;
 
-            // История действий (массив объектов { timestamp, action, productName, productId? })
+            // История действий
             let history = JSON.parse(localStorage.getItem('bau28_history') || '[]');
 
-            // Функция добавления записи в историю
             function addHistory(action, productName = '', productId = '') {
                 const entry = {
                     timestamp: new Date().toLocaleString(),
@@ -882,11 +889,9 @@
                     productName: productName,
                     productId: productId
                 };
-                history.unshift(entry); // новые сверху
-                // ограничим историю последними 100 событиями
+                history.unshift(entry);
                 if (history.length > 100) history = history.slice(0, 100);
                 localStorage.setItem('bau28_history', JSON.stringify(history));
-                // если модалка истории открыта, обновим её
                 if (historyModal.classList.contains('active')) renderHistoryItems();
             }
 
@@ -964,7 +969,30 @@
                         renderProducts();
                     } else {
                         console.error('Ошибка загрузки товаров');
-                        products = {};
+                        // Демо-данные для проверки фильтров
+                        products = {
+                            clothes: [
+                                { id: 'c1', name: 'Футболка Oversize', description: 'Хлопок, свободный крой', price: 2990, img: 'images/tovary/futbolka.jpg', discount: 0, isNew: true },
+                                { id: 'c2', name: 'Худи с принтом', description: 'Тёплое худи', price: 4490, img: 'images/tovary/hudi.jpg', discount: 10, isNew: false },
+                                { id: 'c3', name: 'Карго штаны', description: 'Много карманов', price: 3790, img: 'images/tovary/kargo.jpg', discount: 0, isNew: false },
+                                { id: 'c4', name: 'Бейсболка', description: 'Кепка с козырьком', price: 1990, img: 'images/tovary/bejsbolka.jpg', discount: 5, isNew: true },
+                            ],
+                            accessories: [
+                                { id: 'a1', name: 'Часы сталь/кожа', description: 'Элегантные часы', price: 5490, img: 'images/tovary/chasy.jpg', discount: 0, isNew: false },
+                                { id: 'a2', name: 'Очки Aviator', description: 'Солнцезащитные', price: 2290, img: 'images/tovary/ochki.jpg', discount: 0, isNew: false },
+                            ],
+                            vape: {
+                                liquids: [
+                                    { id: 'v1', name: 'Bloody Mary 30ml', description: 'Клубника со льдом', price: 890, img: 'images/tovary/liquid1.jpg', discount: 0, isNew: true },
+                                ],
+                                disposable: [
+                                    { id: 'v2', name: 'Elf Bar 600', description: 'Одноразка', price: 1290, img: 'images/tovary/elfbar.jpg', discount: 0, isNew: false },
+                                ],
+                            },
+                            electronics: [
+                                { id: 'e1', name: 'Наушники TWS', description: 'Беспроводные', price: 3990, img: 'images/tovary/airpods.jpg', discount: 0, isNew: true },
+                            ]
+                        };
                         renderProducts();
                     }
                 } catch (e) {
@@ -978,10 +1006,24 @@
             function renderProducts() {
                 let items = currentCat === 'vape' ? (products.vape?.[currentSub] || []) : (products[currentCat] || []);
 
-                if (currentFilter === 'sale') items = items.filter(p => p.discount && p.discount > 0);
-                if (currentFilter === 'new') items = items.filter(p => p.isNew);
-                if (currentFilter === 'priceAsc') items.sort((a,b) => (a.discount ? a.price*(1-a.discount/100) : a.price) - (b.discount ? b.price*(1-b.discount/100) : b.price));
-                if (currentFilter === 'priceDesc') items.sort((a,b) => (b.discount ? b.price*(1-b.discount/100) : b.price) - (a.discount ? a.price*(1-a.discount/100) : a.price));
+                // Применяем фильтры
+                if (currentFilter === 'sale') {
+                    items = items.filter(p => p.discount && p.discount > 0);
+                } else if (currentFilter === 'new') {
+                    items = items.filter(p => p.isNew === true);
+                } else if (currentFilter === 'priceAsc') {
+                    items = [...items].sort((a,b) => {
+                        const pa = a.discount ? Math.round(a.price * (1 - a.discount/100)) : a.price;
+                        const pb = b.discount ? Math.round(b.price * (1 - b.discount/100)) : b.price;
+                        return pa - pb;
+                    });
+                } else if (currentFilter === 'priceDesc') {
+                    items = [...items].sort((a,b) => {
+                        const pa = a.discount ? Math.round(a.price * (1 - a.discount/100)) : a.price;
+                        const pb = b.discount ? Math.round(b.price * (1 - b.discount/100)) : b.price;
+                        return pb - pa;
+                    });
+                }
 
                 if (items.length === 0) {
                     productsGrid.innerHTML = '<div style="grid-column: span 2; text-align:center; color:var(--text-muted); padding:40px;">Товары не найдены</div>';
@@ -1364,7 +1406,7 @@
                         if (product) {
                             toggleFavorite(product);
                             addHistory('Удаление из избранного', product.name, product.id);
-                            renderFavItems(); // обновить список
+                            renderFavItems();
                         }
                     });
                 });
@@ -1429,7 +1471,6 @@
                     }
                 }
 
-                // Записываем в историю
                 addHistory('Оформление заказа', `Сумма: ${formatPrice(total)}`);
 
                 cart = [];
@@ -1529,10 +1570,10 @@
                 });
             });
 
-            document.querySelectorAll('.filter-btn').forEach(btn => {
+            document.querySelectorAll('.pill[data-filter]').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const parent = btn.parentElement;
-                    parent.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    parent.querySelectorAll('.pill').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     if (btn.dataset.filter) currentFilter = btn.dataset.filter;
                     renderProducts();
@@ -1554,7 +1595,6 @@
                 await loadProducts();
                 updateCart();
                 updateFavBadge();
-                // инициализируем историю, если нужно
             })();
 
             if (window.Telegram?.WebApp) {
