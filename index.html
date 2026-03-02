@@ -55,70 +55,36 @@
             z-index: 10;
             max-width: 500px;
             margin: 0 auto;
-            padding: 20px 16px 120px;
+            padding: 20px 16px 90px; /* увеличен нижний отступ для хот-бара */
         }
 
         .header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             margin-bottom: 24px;
+            gap: 8px;
+            flex-wrap: wrap;
         }
-        .header-gif {
-    margin-left: auto;  /* прижмёт гифку к правому краю, если нужно */
-    margin-right: 10px; /* отступ от кнопок */
-}
+
+        .logo img {
+            max-height: 60px;
+            width: auto;
+            border-radius: 12px;
+            box-shadow: 0 0 10px #b829ff, 0 0 20px #b829ff, 0 0 30px #b829ff;
+            animation: neonPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes neonPulse {
+            0% { box-shadow: 0 0 5px #b829ff, 0 0 10px #b829ff, 0 0 15px #b829ff; }
+            50% { box-shadow: 0 0 15px #b829ff, 0 0 25px #b829ff, 0 0 35px #b829ff; }
+            100% { box-shadow: 0 0 5px #b829ff, 0 0 10px #b829ff, 0 0 15px #b829ff; }
+        }
 
         .header-gif img {
-    max-height: 40px;   /* подберите размер под шапку */
-    width: auto;
-    border-radius: 8px;  /* можно скруглить, если нужно */
-}
-        .logo {
-    /* если используете <img> с классом logo */
-    max-width: 150px; /* или нужный размер */
-    height: auto;
-    display: inline-block;     
-    border-radius: 12px;
-    overflow: hidden; /* чтобы скругление обрезало содержимое */
-
-}
-.logo img {
-     box-shadow: 0 0 10px #b829ff, 0 0 20px #b829ff, 0 0 30px #b829ff;
-    border-radius: 12px; /* если у логотипа скруглённые углы – укажите нужное значение */
-    max-width: 100%;
-    height: auto;
-    max-height: 60px; /* ограничим высоту, чтобы не ломать шапку */
-    object-fit: contain;
-     animation: neonPulse 2s infinite ease-in-out;
-     
-}
-        @keyframes neonPulse {
-    0% { box-shadow: 0 0 5px #b829ff, 0 0 10px #b829ff, 0 0 15px #b829ff; }
-    50% { box-shadow: 0 0 15px #b829ff, 0 0 25px #b829ff, 0 0 35px #b829ff; }
-    100% { box-shadow: 0 0 5px #b829ff, 0 0 10px #b829ff, 0 0 15px #b829ff; }
-}
-        .top-btn.square {
-    border-radius: 12px; /* квадратная форма с чуть скруглёнными углами */
-    width: 48px;         /* можно увеличить размер под иконку */
-    height: 48px;
-    padding: 0;
-    overflow: hidden;    /* чтобы иконка не вылезала */
-}
-
-.top-btn.square img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;   /* иконка заполнит всю кнопку */
-    display: block;
-}
-
-/* Счётчик избранного остаётся поверх */
-.top-btn.square .badge {
-    top: 0;
-    right: 0;
-    transform: translate(25%, -25%); /* немного сместить, чтобы был на углу */
-}
+            max-height: 40px;
+            width: auto;
+            border-radius: 8px;
         }
 
         .top-actions {
@@ -127,33 +93,41 @@
             align-items: center;
         }
 
-        .top-btn {
+        .top-btn.square {
+            border-radius: 12px;
+            width: 48px;
+            height: 48px;
+            padding: 0;
+            overflow: hidden;
             background: var(--surface);
             border: 1px solid var(--surface-border);
             backdrop-filter: blur(10px);
-            border-radius: 50%;
-            width: 44px; height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
             cursor: pointer;
             position: relative;
-            transition: 0.2s ease;
-            color: var(--text-main);
         }
 
-        .top-btn:active { transform: scale(0.9); }
+        .top-btn.square img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-        .badge {
+        .top-btn.square .badge {
             position: absolute;
-            top: -5px; right: -5px;
+            top: 0;
+            right: 0;
+            transform: translate(25%, -25%);
             background: var(--heart);
             color: white;
             font-size: 11px;
             font-weight: 800;
-            padding: 2px 6px;
-            border-radius: 10px;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
             border: 2px solid var(--bg-color);
         }
 
@@ -360,141 +334,67 @@
         }
         .btn-fav:active { transform: scale(0.9); }
 
-        .cart-fixed {
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: calc(100% - 32px);
-            max-width: 400px;
-            background: linear-gradient(135deg, #1a0f28 0%, #2d1a3a 100%);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--primary);
-            border-radius: 60px;
-            padding: 10px 10px 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-            box-shadow: 0 10px 40px rgba(184, 41, 255, 0.3);
-            transition: 0.3s ease;
-        }
+        /* Хот-бар */
         .hotbar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: rgba(20, 15, 28, 0.9);
-    backdrop-filter: blur(20px);
-    border-top: 2px solid var(--primary);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 8px 0 12px;
-    z-index: 150;
-    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5);
-}
-
-.hotbar-btn {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-    position: relative;
-    transition: transform 0.1s ease;
-}
-
-.hotbar-btn:active {
-    transform: scale(0.9);
-}
-
-.hotbar-icon {
-    font-size: 24px;
-    margin-bottom: 2px;
-}
-
-.hotbar-label {
-    font-size: 11px;
-}
-
-.hotbar-badge {
-    position: absolute;
-    top: -2px;
-    right: -5px;
-    background: var(--heart);
-    color: white;
-    font-size: 10px;
-    font-weight: 800;
-    min-width: 16px;
-    height: 16px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 3px;
-    border: 1px solid var(--bg-color);
-}
-
-        .cart-fixed.hidden { transform: translate(-50%, 150%); }
-
-        .cart-icon-wrapper {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(20, 15, 28, 0.9);
+            backdrop-filter: blur(20px);
+            border-top: 2px solid var(--primary);
             display: flex;
+            justify-content: space-around;
             align-items: center;
-            gap: 12px;
+            padding: 8px 0 12px;
+            z-index: 150;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5);
         }
 
-        .cart-icon-large {
-            font-size: 32px;
-            position: relative;
-        }
-
-        .cart-count-large {
-            position: absolute;
-            top: -8px; right: -8px;
-            background: var(--heart);
-            color: white;
-            font-size: 13px;
-            font-weight: 800;
-            min-width: 22px; height: 22px;
-            border-radius: 11px;
-            display: flex; align-items: center; justify-content: center;
-            padding: 0 5px;
-            border: 2px solid var(--bg-color);
-        }
-
-        .cart-details {
+        .hotbar-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
             display: flex;
             flex-direction: column;
-        }
-
-        .cart-label {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .cart-total-large {
-            font-weight: 800;
-            font-size: 18px;
-            color: #dbb6ff;
-        }
-
-        .checkout-btn-modern {
-            background: var(--primary);
-            border: none;
-            color: white;
-            font-weight: 700;
-            padding: 14px 28px;
-            border-radius: 40px;
+            align-items: center;
             cursor: pointer;
-            font-size: 15px;
-            box-shadow: 0 5px 15px rgba(184, 41, 255, 0.4);
-            transition: 0.2s;
+            position: relative;
+            transition: transform 0.1s ease;
         }
-        .checkout-btn-modern:active { transform: scale(0.95); }
 
+        .hotbar-btn:active {
+            transform: scale(0.9);
+        }
+
+        .hotbar-icon {
+            font-size: 24px;
+            margin-bottom: 2px;
+        }
+
+        .hotbar-label {
+            font-size: 11px;
+        }
+
+        .hotbar-badge {
+            position: absolute;
+            top: -2px;
+            right: -5px;
+            background: var(--heart);
+            color: white;
+            font-size: 10px;
+            font-weight: 800;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 3px;
+            border: 1px solid var(--bg-color);
+        }
+
+        /* Модальные окна */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -770,21 +670,15 @@
     <div class="bg-custom"></div>
 
     <div class="app">
-       <div class="header">
-    <div class="logo">
-        <img src="images/logo.jpg" alt="Bau28">
-    </div> 
-           <div class="header-gif">
-        <img src="https://i.pinimg.com/originals/29/3a/55/293a55a10b33f45c07ecea5420ec70a6.gif?nii=t" alt="animation">      
-        <img src="https://media.tenor.com/-qgbLIouWGoAAAAj/dancing-white-cat-dance.gif" alt="animation">
-        <img src="https://i.pinimg.com/originals/0d/ac/06/0dac06a5332d13e2a4e2dc30ba0c6411.gif?nii=t" alt="animation">
-    </div>
-          
-    <div class="top-actions">
-        
-</div>
-</div>
-   
+        <div class="header">
+            <div class="logo">
+                <img src="images/logo.jpg" alt="Bau28">
+            </div> 
+            <div class="header-gif">
+                <img src="https://i.pinimg.com/originals/29/3a/55/293a55a10b33f45c07ecea5420ec70a6.gif?nii=t" alt="animation">
+            </div>
+            <!-- Кнопки в шапке можно убрать, так как есть хот-бар -->
+        </div>
 
         <div class="categories" id="categories">
             <div class="cat-btn active" data-cat="clothes"><span>Одежда</span></div>
@@ -888,54 +782,48 @@
         </div>
     </div>
 
-<!-- Нижний хот-бар -->
-<div class="hotbar" id="hotbar">
-    <button class="hotbar-btn" id="hotbarCart">
-        <span class="hotbar-icon">🛒</span>
-        <span class="hotbar-label">Корзина</span>
-        <span class="hotbar-badge" id="hotbarCartBadge">0</span>
-    </button>
-    <button class="hotbar-btn" id="hotbarFav">
-        <span class="hotbar-icon">❤️</span>
-        <span class="hotbar-label">Избранное</span>
-        <span class="hotbar-badge" id="hotbarFavBadge">0</span>
-    </button>
-    <button class="hotbar-btn" id="hotbarWheel">
-        <span class="hotbar-icon">🎁</span>
-        <span class="hotbar-label">Колесо</span>
-        <!-- без бейджа -->
-    </button>
-</div>
-    
+    <!-- Нижний хот-бар -->
+    <div class="hotbar" id="hotbar">
+        <button class="hotbar-btn" id="hotbarCart">
+            <span class="hotbar-icon">🛒</span>
+            <span class="hotbar-label">Корзина</span>
+            <span class="hotbar-badge" id="hotbarCartBadge">0</span>
+        </button>
+        <button class="hotbar-btn" id="hotbarFav">
+            <span class="hotbar-icon">❤️</span>
+            <span class="hotbar-label">Избранное</span>
+            <span class="hotbar-badge" id="hotbarFavBadge">0</span>
+        </button>
+        <button class="hotbar-btn" id="hotbarWheel">
+            <span class="hotbar-icon">🎁</span>
+            <span class="hotbar-label">Колесо</span>
+        </button>
+    </div>
+
     <div class="notification" id="notification">✅ Добавлено</div>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // ==================== КОНФИГУРАЦИЯ ====================
-            // ⚠️ ЗАМЕНИТЕ НА URL ВАШЕГО БОТА НА RAILWAY
-            const API_BASE_URL = 'https://bot-production-cf41.up.railway.app';
+            const API_BASE_URL = 'https://bot-production-cf41.up.railway.app'; // замените на свой URL
 
-            // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
+            // Глобальные переменные
             let products = {};
             let currentCat = 'clothes';
             let currentSub = 'liquids';
             let currentFilter = 'all';
             let cart = JSON.parse(localStorage.getItem('bau28_cart') || '[]');
-            let favorites = JSON.parse(localStorage.getItem('bau28_fav') || '[]');
-            let appliedPromo = null; // {code, discount, type, discount_type}
+            let favorites = JSON.parse(localStorage.getItem('bau28_fav') || '[]'); // массив ID
+            let appliedPromo = null;
             let wheelDiscount = 0;
             let wheelPrizes = [];
             let currentProduct = null;
 
-            // ==================== DOM ЭЛЕМЕНТЫ ====================
+            // DOM элементы
             const productsGrid = document.getElementById('productsGrid');
-            const floatingCart = document.getElementById('floatingCart');
             const notif = document.getElementById('notification');
-            const favBadge = document.getElementById('favBadge');
             const cartModal = document.getElementById('cartModal');
             const closeCartBtn = document.getElementById('closeCartBtn');
-            const openCartBtn = document.getElementById('openCartBtn');
             const cartItemsDiv = document.getElementById('cartItems');
             const modalTotalSpan = document.getElementById('modalTotal');
             const cartCountSpan = document.getElementById('cartCount');
@@ -946,7 +834,6 @@
             const promoMessage = document.getElementById('promoMessage');
             const discountRow = document.getElementById('discountRow');
             const discountAmountSpan = document.getElementById('discountAmount');
-            const wheelBtn = document.getElementById('wheelBtn');
             const wheelModal = document.getElementById('wheelModal');
             const closeWheelBtn = document.getElementById('closeWheelBtn');
             const spinBtn = document.getElementById('spinWheel');
@@ -960,10 +847,17 @@
             const modalProductDescription = document.getElementById('modalProductDescription');
             const modalProductPrice = document.getElementById('modalProductPrice');
             const modalAddToCart = document.getElementById('modalAddToCart');
+            const favModal = document.getElementById('favModal');
+            const closeFavBtn = document.getElementById('closeFavBtn');
+            const hotbarCart = document.getElementById('hotbarCart');
+            const hotbarFav = document.getElementById('hotbarFav');
+            const hotbarWheel = document.getElementById('hotbarWheel');
+            const hotbarCartBadge = document.getElementById('hotbarCartBadge');
+            const hotbarFavBadge = document.getElementById('hotbarFavBadge');
 
-            // ==================== ВСПОМОГАТЕЛЬНЫЕ ====================
+            // Вспомогательные функции
             const formatPrice = (p) => p.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
-            
+
             function showNotification(text) {
                 notif.textContent = text;
                 notif.classList.add('show');
@@ -985,7 +879,7 @@
                 return null;
             }
 
-            // ==================== ЗАГРУЗКА ТОВАРОВ С СЕРВЕРА ====================
+            // Загрузка товаров
             async function loadProducts() {
                 try {
                     const response = await fetch(`${API_BASE_URL}/api/products`);
@@ -994,7 +888,7 @@
                         renderProducts();
                     } else {
                         console.error('Ошибка загрузки товаров');
-                        products = {}; // пустой объект
+                        products = {};
                         renderProducts();
                     }
                 } catch (e) {
@@ -1004,10 +898,10 @@
                 }
             }
 
-            // ==================== ОТРИСОВКА КАТАЛОГА ====================
+            // Отрисовка каталога
             function renderProducts() {
                 let items = currentCat === 'vape' ? (products.vape?.[currentSub] || []) : (products[currentCat] || []);
-                
+
                 if (currentFilter === 'sale') items = items.filter(p => p.discount && p.discount > 0);
                 if (currentFilter === 'new') items = items.filter(p => p.isNew);
                 if (currentFilter === 'priceAsc') items.sort((a,b) => (a.discount ? a.price*(1-a.discount/100) : a.price) - (b.discount ? b.price*(1-b.discount/100) : b.price));
@@ -1020,7 +914,7 @@
 
                 productsGrid.innerHTML = items.map(p => {
                     const finalPrice = p.discount ? Math.round(p.price * (1 - p.discount/100)) : p.price;
-                    const isFav = favorites.some(f => f.id === p.id);
+                    const isFav = favorites.includes(p.id);
                     return `
                         <div class="product-card" data-id="${p.id}">
                             <div class="product-img">
@@ -1067,7 +961,7 @@
                         const p = findProduct(id);
                         if (p) {
                             toggleFavorite(p);
-                            btn.textContent = favorites.some(f => f.id === id) ? '❤️' : '🤍';
+                            btn.textContent = favorites.includes(id) ? '❤️' : '🤍';
                         }
                     });
                 });
@@ -1095,7 +989,7 @@
                 if (e.target === productModal) productModal.classList.remove('active');
             });
 
-            // ==================== КОРЗИНА ====================
+            // Корзина
             window.changeQty = function(id, delta) {
                 const item = cart.find(i => i.id === id);
                 if (item) {
@@ -1140,14 +1034,7 @@
                 cartTotalSpan.textContent = formatPrice(total);
                 modalTotalSpan.textContent = formatPrice(total);
 
-
-    const hotbarCartBadge = document.getElementById('hotbarCartBadge');
-    if (hotbarCartBadge) {
-        hotbarCartBadge.textContent = totalItems;
-    }
-                
-                if (totalItems > 0) floatingCart.classList.remove('hidden');
-                else floatingCart.classList.add('hidden');
+                if (hotbarCartBadge) hotbarCartBadge.textContent = totalItems;
 
                 if (promoDiscount > 0 || wheelDiscount > 0) {
                     discountRow.style.display = 'flex';
@@ -1190,7 +1077,7 @@
                 updateCart();
             };
 
-            // ==================== ПРОМОКОДЫ ====================
+            // Промокоды
             applyPromoBtn.addEventListener('click', async () => {
                 const code = promoInput.value.trim().toUpperCase();
                 if (!code) {
@@ -1207,7 +1094,6 @@
                     const data = await response.json();
                     if (data.valid) {
                         if (data.type === 'wheel') {
-                            wheelActive = true;
                             wheelPromoInput.value = code;
                             promoMessage.textContent = '✅ Промокод активирован! Теперь крутите колесо.';
                             wheelModal.classList.add('active');
@@ -1231,17 +1117,7 @@
                 updateCart();
             });
 
-            // ==================== КОЛЕСО ФОРТУНЫ ====================
-            wheelBtn.addEventListener('click', () => {
-                wheelModal.classList.add('active');
-                fetchWheelPrizes();
-            });
-
-            closeWheelBtn.addEventListener('click', () => wheelModal.classList.remove('active'));
-            wheelModal.addEventListener('click', (e) => {
-                if (e.target === wheelModal) wheelModal.classList.remove('active');
-            });
-
+            // Колесо фортуны
             async function fetchWheelPrizes() {
                 try {
                     const response = await fetch(`${API_BASE_URL}/api/wheel/prizes`);
@@ -1259,7 +1135,6 @@
                     wheelResultDiv.textContent = 'Введите промокод для колеса';
                     return;
                 }
-                // Проверяем промокод
                 try {
                     const resp = await fetch(`${API_BASE_URL}/api/check_promo`, {
                         method: 'POST',
@@ -1284,7 +1159,7 @@
                 const rotations = 5 + Math.random() * 3;
                 const degrees = rotations * 360 + Math.random() * 360;
                 wheel.style.transform = `rotate(${degrees}deg)`;
-                
+
                 setTimeout(() => {
                     const totalWeight = wheelPrizes.reduce((s, p) => s + (p.probability || 1), 0);
                     let rand = Math.random() * totalWeight;
@@ -1312,112 +1187,92 @@
                 }, 3000);
             });
 
-            // ==================== ИЗБРАННОЕ (ХРАНИМ ТОЛЬКО ID) ====================
-let favorites = JSON.parse(localStorage.getItem('bau28_fav') || '[]'); // теперь массив ID
+            // Избранное
+            function toggleFavorite(product) {
+                const id = product.id;
+                const index = favorites.indexOf(id);
+                if (index === -1) {
+                    favorites.push(id);
+                } else {
+                    favorites.splice(index, 1);
+                }
+                localStorage.setItem('bau28_fav', JSON.stringify(favorites));
+                updateFavBadge();
+                renderProducts();
+            }
 
-function toggleFavorite(product) {
-    const id = product.id;
-    const index = favorites.indexOf(id);
-    if (index === -1) {
-        favorites.push(id);
-    } else {
-        favorites.splice(index, 1);
-    }
-    localStorage.setItem('bau28_fav', JSON.stringify(favorites));
-    updateFavBadge();
-    renderProducts(); // перерисовываем, чтобы обновить сердечки
-}
+            function updateFavBadge() {
+                if (hotbarFavBadge) hotbarFavBadge.textContent = favorites.length;
+            }
 
-function isFavorite(id) {
-    return favorites.includes(id);
-}
+            function renderFavItems() {
+                const container = document.getElementById('favItems');
+                if (favorites.length === 0) {
+                    container.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:20px;">Нет избранных</div>';
+                    return;
+                }
 
-function updateFavBadge() {
-    document.getElementById('hotbarFavBadge').textContent = favorites.length;
-    // также обновляем бейдж в шапке (если остался)
-    const favBadge = document.getElementById('favBadge');
-    if (favBadge) {
-        if (favorites.length > 0) {
-            favBadge.style.display = 'block';
-            favBadge.textContent = favorites.length;
-        } else {
-            favBadge.style.display = 'none';
-        }
-    }
-}
-
-function renderFavItems() {
-    const container = document.getElementById('favItems');
-    if (favorites.length === 0) {
-        container.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:20px;">Нет избранных</div>';
-        return;
-    }
-
-    let html = '';
-    favorites.forEach(id => {
-        // ищем товар во всех категориях
-        let product = null;
-        for (let cat in products) {
-            if (cat === 'vape') {
-                for (let sub in products.vape) {
-                    const found = products.vape[sub]?.find(p => p.id === id);
-                    if (found) {
-                        product = found;
-                        break;
+                let html = '';
+                favorites.forEach(id => {
+                    let product = null;
+                    for (let cat in products) {
+                        if (cat === 'vape') {
+                            for (let sub in products.vape) {
+                                const found = products.vape[sub]?.find(p => p.id === id);
+                                if (found) {
+                                    product = found;
+                                    break;
+                                }
+                            }
+                        } else {
+                            const found = products[cat]?.find(p => p.id === id);
+                            if (found) {
+                                product = found;
+                                break;
+                            }
+                        }
+                        if (product) break;
                     }
-                }
-            } else {
-                const found = products[cat]?.find(p => p.id === id);
-                if (found) {
-                    product = found;
-                    break;
-                }
+
+                    if (!product) {
+                        favorites = favorites.filter(fid => fid !== id);
+                        localStorage.setItem('bau28_fav', JSON.stringify(favorites));
+                        updateFavBadge();
+                        return;
+                    }
+
+                    const price = product.discount ? Math.round(product.price * (1 - product.discount/100)) : product.price;
+                    html += `
+                        <div class="cart-item-modern">
+                            <div class="cart-item-left">
+                                <span class="cart-item-emoji">🛍️</span>
+                                <div class="cart-item-info">
+                                    <span class="cart-item-name">${product.name}</span>
+                                    <span class="cart-item-price">${formatPrice(price)}</span>
+                                </div>
+                            </div>
+                            <button class="btn-add" style="width:auto; padding:8px 16px;" data-id="${product.id}">В корзину</button>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+                container.querySelectorAll('.btn-add').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const id = btn.dataset.id;
+                        const product = findProduct(id);
+                        if (product) {
+                            addToCart(product);
+                        }
+                    });
+                });
             }
-            if (product) break;
-        }
 
-        if (!product) {
-            // товар удалён – пропускаем, но можно показать заглушку или удалить из избранного
-            // для чистоты – удалим ID из массива
-            favorites = favorites.filter(fid => fid !== id);
-            localStorage.setItem('bau28_fav', JSON.stringify(favorites));
-            updateFavBadge();
-            return;
-        }
-
-        const price = product.discount ? Math.round(product.price * (1 - product.discount/100)) : product.price;
-        html += `
-            <div class="cart-item-modern">
-                <div class="cart-item-left">
-                    <span class="cart-item-emoji">🛍️</span>
-                    <div class="cart-item-info">
-                        <span class="cart-item-name">${product.name}</span>
-                        <span class="cart-item-price">${formatPrice(price)}</span>
-                    </div>
-                </div>
-                <button class="btn-add" style="width:auto; padding:8px 16px;" data-id="${product.id}">В корзину</button>
-            </div>
-        `;
-    });
-
-    container.innerHTML = html;
-    // Обработчики на кнопки внутри избранного
-    container.querySelectorAll('.btn-add').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const id = btn.dataset.id;
-            const product = findProduct(id);
-            if (product) {
-                addToCart(product);
-                // можно закрыть модалку или нет – по желанию
-            }
-        });
-    });
-}
-            // ==================== ОТПРАВКА ЗАКАЗА ====================
+            // Отправка заказа
             orderBtn.addEventListener('click', async () => {
                 if (cart.length === 0) return;
-                
+
                 const subtotal = cart.reduce((s,i) => s + i.price*i.quantity, 0);
                 const promoDiscount = appliedPromo && appliedPromo.type === 'discount' ? 
                     (appliedPromo.discount_type === 'percent' ? Math.round(subtotal * appliedPromo.discount / 100) : appliedPromo.discount) : 0;
@@ -1434,14 +1289,14 @@ function renderFavItems() {
                     promo: appliedPromo ? appliedPromo.code : undefined,
                     wheel_discount: wheelDiscount
                 };
-                
+
                 const tg = window.Telegram?.WebApp;
                 if (tg && tg.sendData) {
                     tg.sendData(JSON.stringify(orderData));
                 } else {
                     alert('Тестовый режим. Заказ: ' + JSON.stringify(orderData));
                 }
-                
+
                 if (API_BASE_URL) {
                     try {
                         await fetch(`${API_BASE_URL}/api/order`, {
@@ -1453,7 +1308,7 @@ function renderFavItems() {
                         console.error('Не удалось отправить заказ на сервер:', error);
                     }
                 }
-                
+
                 cart = [];
                 appliedPromo = null;
                 wheelDiscount = 0;
@@ -1464,28 +1319,40 @@ function renderFavItems() {
                 showNotification('🚀 Заказ оформлен!');
             });
 
-            // ==================== МОДАЛКИ ====================
-            const setupModal = (btnId, modalId, closeBtnId, renderFn) => {
-                const modal = document.getElementById(modalId);
-                document.getElementById(btnId).addEventListener('click', () => {
-                    if(renderFn) renderFn();
-                    modal.classList.add('active');
+            // Модалки через хот-бар
+            hotbarCart.addEventListener('click', () => {
+                renderCartItems();
+                cartModal.classList.add('active');
+            });
+
+            hotbarFav.addEventListener('click', () => {
+                renderFavItems();
+                favModal.classList.add('active');
+            });
+
+            hotbarWheel.addEventListener('click', () => {
+                wheelModal.classList.add('active');
+                fetchWheelPrizes();
+            });
+
+            // Закрытие модалок
+            closeCartBtn.addEventListener('click', () => cartModal.classList.remove('active'));
+            closeFavBtn.addEventListener('click', () => favModal.classList.remove('active'));
+            closeWheelBtn.addEventListener('click', () => wheelModal.classList.remove('active'));
+            [cartModal, favModal, wheelModal, productModal].forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) modal.classList.remove('active');
                 });
-                document.getElementById(closeBtnId).addEventListener('click', () => modal.classList.remove('active'));
-                modal.addEventListener('click', () => modal.classList.remove('active'));
-            };
+            });
 
-            setupModal('openCartBtn', 'cartModal', 'closeCartBtn', renderCartItems);
-            setupModal('topFavBtn', 'favModal', 'closeFavBtn', renderFavItems);
-
-            // ==================== НАВИГАЦИЯ ====================
+            // Навигация
             document.querySelectorAll('.cat-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     currentCat = btn.dataset.cat;
                     document.getElementById('vapeSubcats').style.display = currentCat === 'vape' ? 'flex' : 'none';
-                    if(currentCat === 'vape') currentSub = 'liquids';
+                    if (currentCat === 'vape') currentSub = 'liquids';
                     renderProducts();
                 });
             });
@@ -1510,7 +1377,7 @@ function renderFavItems() {
                 });
             });
 
-            // ==================== ИНИЦИАЛИЗАЦИЯ ====================
+            // Инициализация
             (async () => {
                 await loadProducts();
                 updateCart();
@@ -1521,39 +1388,8 @@ function renderFavItems() {
                 window.Telegram.WebApp.ready();
                 window.Telegram.WebApp.expand();
                 window.Telegram.WebApp.setHeaderColor('#0d0914');
-
-                // Открытие модалок по кнопкам хот-бара
-document.getElementById('hotbarCart').addEventListener('click', () => {
-    renderCartItems();
-    cartModal.classList.add('active');
-});
-
-document.getElementById('hotbarFav').addEventListener('click', () => {
-    renderFavItems();
-    favModal.classList.add('active');
-});
-
-document.getElementById('hotbarWheel').addEventListener('click', () => {
-    wheelModal.classList.add('active');
-    fetchWheelPrizes(); // если нужно загрузить призы
-});
             }
         });
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
