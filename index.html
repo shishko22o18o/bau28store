@@ -314,7 +314,6 @@
         }
         .btn-fav:active { transform: scale(0.9); }
 
-        /* Улучшенная корзина */
         .cart-fixed {
             position: fixed;
             bottom: 24px;
@@ -670,12 +669,8 @@
         <div class="header">
             <div class="logo">Bau28</div>
             <div class="top-actions">
-                <button class="top-btn" id="wheelBtn">
-                    🎁
-                </button>
-                <button class="top-btn" id="topFavBtn">
-                    ❤️<span class="badge" id="favBadge" style="display:none;">0</span>
-                </button>
+                <button class="top-btn" id="wheelBtn">🎁</button>
+                <button class="top-btn" id="topFavBtn">❤️<span class="badge" id="favBadge" style="display:none;">0</span></button>
             </div>
         </div>
 
@@ -704,12 +699,9 @@
         <div class="products-grid" id="productsGrid"></div>
     </div>
 
-    <!-- Новая улучшенная корзина -->
     <div class="cart-fixed hidden" id="floatingCart">
         <div class="cart-icon-wrapper">
-            <div class="cart-icon-large">
-                🛒<span class="cart-count-large" id="cartCount">0</span>
-            </div>
+            <div class="cart-icon-large">🛒<span class="cart-count-large" id="cartCount">0</span></div>
             <div class="cart-details">
                 <span class="cart-label">Корзина</span>
                 <span class="cart-total-large" id="cartTotal">0 ₽</span>
@@ -718,7 +710,7 @@
         <button class="checkout-btn-modern" id="openCartBtn">Оформить</button>
     </div>
 
-    <!-- Модалка корзины (новый дизайн) -->
+    <!-- Модалка корзины -->
     <div class="modal-overlay" id="cartModal">
         <div class="bottom-sheet" onclick="event.stopPropagation()">
             <div class="sheet-handle"></div>
@@ -801,7 +793,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // ==================== КОНФИГУРАЦИЯ ====================
-            const API_BASE_URL = 'https://bot-production-cf41.up.railway.app'; // Замените на ваш URL
+            // ⚠️ ЗАМЕНИТЕ НА URL ВАШЕГО БОТА НА RAILWAY
+            const API_BASE_URL = 'https://bot-production-cf41.up.railway.app';
 
             // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
             let products = {};
@@ -810,10 +803,9 @@
             let currentFilter = 'all';
             let cart = JSON.parse(localStorage.getItem('bau28_cart') || '[]');
             let favorites = JSON.parse(localStorage.getItem('bau28_fav') || '[]');
-            let appliedPromo = null; // {code, discount, type}
-            let wheelDiscount = 0; // скидка от колеса
-            let wheelPrizes = [];   // призы колеса, загруженные с сервера
-            let wheelActive = false; // активировано ли колесо (после ввода промокода)
+            let appliedPromo = null; // {code, discount, type, discount_type}
+            let wheelDiscount = 0;
+            let wheelPrizes = [];
             let currentProduct = null;
 
             // ==================== DOM ЭЛЕМЕНТЫ ====================
@@ -873,40 +865,23 @@
                 return null;
             }
 
-            // ==================== ЗАГРУЗКА ТОВАРОВ ====================
+            // ==================== ЗАГРУЗКА ТОВАРОВ С СЕРВЕРА ====================
             async function loadProducts() {
-                if (API_BASE_URL) {
-                    try {
-                        const response = await fetch(`${API_BASE_URL}/api/products`);
-                        if (response.ok) {
-                            products = await response.json();
-                            renderProducts();
-                            return;
-                        }
-                    } catch (e) {
-                        console.warn('Не удалось загрузить товары с сервера, используем демо-данные');
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/products`);
+                    if (response.ok) {
+                        products = await response.json();
+                        renderProducts();
+                    } else {
+                        console.error('Ошибка загрузки товаров');
+                        products = {}; // пустой объект
+                        renderProducts();
                     }
+                } catch (e) {
+                    console.error('Не удалось подключиться к серверу:', e);
+                    products = {};
+                    renderProducts();
                 }
-                // Демо-данные
-                products = {
-                    clothes: [
-                        { id: 'c1', name: 'Футболка Oversize', description: 'Хлопок 100%, свободный крой', price: 2990, img: 'images/tovary/futbolka.jpg', discount: 0, isNew: true },
-                        { id: 'c2', name: 'Худи с принтом', description: 'Тёплое худи с капюшоном', price: 4490, img: 'images/tovary/hudi.jpg', discount: 10 },
-                        { id: 'c3', name: 'Карго штаны', description: 'Много карманов, удобные', price: 3790, img: 'images/tovary/kargo.jpg' },
-                    ],
-                    accessories: [
-                        { id: 'a1', name: 'Часы сталь/кожа', description: 'Элегантные часы', price: 5490, img: 'images/tovary/chasy.jpg' },
-                    ],
-                    vape: {
-                        liquids: [
-                            { id: 'v1', name: 'Bloody Mary 30ml', description: 'Клубника со льдом', price: 890, img: 'images/tovary/liquid1.jpg' },
-                        ],
-                    },
-                    electronics: [
-                        { id: 'e1', name: 'Наушники TWS', description: 'Беспроводные наушники', price: 3990, img: 'images/tovary/airpods.jpg' },
-                    ]
-                };
-                renderProducts();
             }
 
             // ==================== ОТРИСОВКА КАТАЛОГА ====================
@@ -1106,13 +1081,17 @@
                     const data = await response.json();
                     if (data.valid) {
                         if (data.type === 'wheel') {
-                            // Активируем колесо
                             wheelActive = true;
                             wheelPromoInput.value = code;
                             promoMessage.textContent = '✅ Промокод активирован! Теперь крутите колесо.';
                             wheelModal.classList.add('active');
                         } else {
-                            appliedPromo = { code, discount: data.discount, type: 'discount', discount_type: data.discount_type };
+                            appliedPromo = { 
+                                code, 
+                                discount: data.discount, 
+                                type: 'discount', 
+                                discount_type: data.discount_type 
+                            };
                             promoMessage.textContent = `✅ Промокод применён: скидка ${data.discount}${data.discount_type === 'percent' ? '%' : '₽'}`;
                         }
                     } else {
@@ -1129,7 +1108,6 @@
             // ==================== КОЛЕСО ФОРТУНЫ ====================
             wheelBtn.addEventListener('click', () => {
                 wheelModal.classList.add('active');
-                // Загружаем призы при открытии
                 fetchWheelPrizes();
             });
 
@@ -1155,8 +1133,7 @@
                     wheelResultDiv.textContent = 'Введите промокод для колеса';
                     return;
                 }
-                // Проверяем, что промокод активирован (можно повторно проверить на сервере)
-                // Упростим: проверяем, что код валидный и типа wheel
+                // Проверяем промокод
                 try {
                     const resp = await fetch(`${API_BASE_URL}/api/check_promo`, {
                         method: 'POST',
@@ -1178,13 +1155,11 @@
                     return;
                 }
 
-                // Анимация вращения
                 const rotations = 5 + Math.random() * 3;
                 const degrees = rotations * 360 + Math.random() * 360;
                 wheel.style.transform = `rotate(${degrees}deg)`;
                 
                 setTimeout(() => {
-                    // Выбираем случайный приз с учётом вероятности
                     const totalWeight = wheelPrizes.reduce((s, p) => s + (p.probability || 1), 0);
                     let rand = Math.random() * totalWeight;
                     let selected = null;
@@ -1197,20 +1172,13 @@
                     }
                     if (!selected) selected = wheelPrizes[0];
 
-                    // Применяем приз
                     if (selected.type === 'percent') {
                         const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
                         wheelDiscount = Math.round(subtotal * selected.value / 100);
                     } else if (selected.type === 'fixed') {
                         wheelDiscount = selected.value;
-                    } else if (selected.type === 'bonus') {
-                        // Можно реализовать бонусные баллы (пока не используем)
+                    } else {
                         wheelDiscount = 0;
-                    } else if (selected.type === 'shipping') {
-                        // Бесплатная доставка (не скидка, а отдельный флаг)
-                        // Для простоты добавим как скидку 0, но отметим
-                        wheelDiscount = 0;
-                        // В реальности нужно добавить поле shipping_free в корзину
                     }
 
                     wheelResultDiv.innerHTML = `🎉 Ваш приз: ${selected.description}!`;
