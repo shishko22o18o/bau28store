@@ -974,7 +974,7 @@
                 productsGrid.innerHTML = items.map(p => {
                     const finalPrice = p.discount ? Math.round(p.price * (1 - p.discount/100)) : p.price;
                     const isFav = favorites.includes(p.id);
-                    const imgSrc = p.images && p.images.length > 0 ? p.images[0] : 'images/tovary/default.jpg';
+                    const imgSrc = p.images && p.images.length > 0 ? p.images[0] : 'static/uploaded.jpg';
                     return `
                         <div class="product-card" data-id="${p.id}">
                             <div class="product-img">
@@ -1565,3 +1565,4 @@
     </script>
 </body>
 </html>
+
