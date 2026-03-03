@@ -842,26 +842,30 @@
         </div>
     </div>
 
-    <!-- Модалка детального просмотра товара -->
-    <div class="modal-overlay" id="productModal">
-        <div class="bottom-sheet" onclick="event.stopPropagation()">
-            <div class="sheet-handle"></div>
-            <div class="sheet-header">
-                <button class="modal-prev" id="modalPrev">←</button>
-                <button class="modal-next" id="modalNext">→</button>
-                <span id="modalProductTitle">Товар</span>
-                <button class="close-btn" id="closeProductBtn">✕</button>
+  
+   <!-- Модалка детального просмотра товара -->
+<div class="modal-overlay" id="productModal">
+    <div class="bottom-sheet" onclick="event.stopPropagation()">
+        <div class="sheet-handle"></div>
+        <div class="sheet-header">
+            <span id="modalProductTitle">Товар</span>
+            <button class="close-btn" id="closeProductBtn">✕</button>
+        </div>
+        <div class="sheet-body" style="position: relative;">
+            <!-- Контейнер для изображения и стрелок -->
+            <div style="position: relative; width: 100%; margin-bottom: 15px;">
+                <img id="modalProductImage" src="" style="width: 100%; border-radius: 20px; max-height: 250px; object-fit: contain; background: #1a0a24; cursor: pointer;">
+                <!-- Кнопки навигации (видны только если есть несколько фото) -->
+                <button class="modal-prev" id="modalPrev" style="display: none;">←</button>
+                <button class="modal-next" id="modalNext" style="display: none;">→</button>
             </div>
-            <div class="sheet-body">
-                <div style="text-align: center;">
-                    <img id="modalProductImage" src="" style="width: 100%; border-radius: 20px; max-height: 250px; object-fit: contain; background: #1a0a24; cursor: pointer;">
-                    <p id="modalProductDescription" style="margin: 15px 0; color: var(--text-muted); text-align: left;"></p>
-                    <div style="font-size: 24px; font-weight: 800; color: #dbb6ff;" id="modalProductPrice"></div>
-                    <button class="btn-add" style="width: 100%; margin-top: 20px;" id="modalAddToCart">В корзину</button>
-                </div>
-            </div>
+            <!-- Описание и цена -->
+            <p id="modalProductDescription" style="margin: 15px 0; color: var(--text-muted); text-align: left;"></p>
+            <div style="font-size: 24px; font-weight: 800; color: #dbb6ff;" id="modalProductPrice"></div>
+            <button class="btn-add" style="width: 100%; margin-top: 20px;" id="modalAddToCart">В корзину</button>
         </div>
     </div>
+</div>
 
     <!-- Нижний хот-бар с JPG иконками -->
     <div class="hotbar" id="hotbar">
@@ -1796,6 +1800,7 @@ document.getElementById('modalNext').addEventListener('click', () => {
     </script>
 </body>
 </html>
+
 
 
 
